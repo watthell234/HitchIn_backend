@@ -16,3 +16,13 @@ class User(db.Model):
         self.last_name = last_name
         self.email = email
         self.password = password
+
+class Carpool(db.Model):
+    __tablename__ = "carpool"
+    id = db.Column(db.Integer, primary_key=True)
+    car_make = db.Column(db.Integer, unique=True)
+    owner_email = db.Column(db.String(18), db.ForeignKey('users.email'))
+
+    def __init__(self, car_make, owner_email):
+        self.car_make = phone_number
+        self.owner_email = first_name
