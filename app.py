@@ -35,6 +35,19 @@ def sign_up():
     else:
         abort(401)
 
+
+@app.route("/login", methods=['GET'])
+def login():
+    phone_number = request.json.get('phoneNumber', None)
+    password = request.json.get('password', None)
+    if db.session.query(User).filter(User.phone_number == phone_number, User.password == password).first():
+        return jsonify({
+            'status': '200',
+            'message': 'Successfully Logged in'
+        })
+    else:
+        abort(403)
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
