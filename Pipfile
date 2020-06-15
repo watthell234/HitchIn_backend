@@ -11,6 +11,8 @@ psycopg2 = "*"
 flask-sqlalchemy = "*"
 flask-migrate = "*"
 flask-script = "*"
+gunicorn = "*"
+flask-heroku = "*"
 
 [requires]
 python_version = "3.7"
