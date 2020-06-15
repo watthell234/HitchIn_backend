@@ -18,13 +18,13 @@ def index():
 
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
-    phone_number = request.json.get('phone_number', None)
-    first_name = request.json.get('first_name', None)
-    last_name = request.json.get('last_name', None)
+    phone_number = request.json.get('phoneNumber', None)
+    first_name = request.json.get('firstName', None)
+    last_name = request.json.get('lastName', None)
     email = request.json.get('email', None)
     password = request.json.get('password', None)
 
-    if not db.session.query(User).filter(User.phone_number == phone_number).first():
+    if not db.session.query(User).filter(User.phone_number == phoneNumber).first():
         new_user = User(phone_number, first_name, last_name, email, password)
         db.session.add(new_user)
         db.session.commit()
