@@ -36,7 +36,7 @@ def sign_up():
         abort(401)
 
 
-@app.route("/login", methods=['GET'])
+@app.route("/login", methods=['POST'])
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
