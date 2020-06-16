@@ -46,6 +46,7 @@ def login():
             'message': 'Successfully Logged in'
         })
     else:
+        print(password)
         abort(403)
 
 if __name__ == '__main__':
