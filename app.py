@@ -46,6 +46,8 @@ def login():
             'message': 'Successfully Logged in'
         })
     else:
+        print(db.session.query(User).filter(User.phone_number == phone_number, User.password == password).first())
+        print(db.session.query(User).filter(User.phone_number == phone_number).filter(User.password == password).first())
         print(password)
         abort(403)
 
