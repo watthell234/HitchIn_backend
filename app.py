@@ -41,11 +41,6 @@ def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
     if db.session.query(User).filter(User.phone_number == phone_number, User.password == password).first():
-        print(phone_number)
-        print(password)
-        print(db.session.query(User).filter(User.phone_number == phone_number).first())
-        print(db.session.query(User).filter(User.phone_number == phone_number).filter(User.password == password).first())
-        print(password)
         return jsonify({
             'status': '200',
             'message': 'Successfully Logged in'
