@@ -40,7 +40,7 @@ def sign_up():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    if db.session.query(User).filter(User.phone_number == phone_number, User.password == password).first():
+    if db.session.query(User).filter(User.phone_number == phone_number).first():
         return jsonify({
             'status': '200',
             'message': 'Successfully Logged in'
