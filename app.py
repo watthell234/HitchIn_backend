@@ -48,6 +48,12 @@ def login():
     else:
         abort(403)
 
+@app.route("/slug", methods=['POST'])
+def slug_checkin():
+    carpool_id = request.json.get('carpoolId', None)
+    print(carpool_id)
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run()
