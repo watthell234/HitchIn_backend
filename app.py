@@ -51,13 +51,16 @@ def login():
 @app.route("/slug", methods=['POST'])
 def slug_checkin():
     slug_id = request.json.get('slugId', None)
-    new_slug = Slug(slug_id)
-    db.session.add(new_slug)
-    db.session.commit()
-    return jsonify({
-        'status': '200',
-        'message': 'Successfully sluggin'
-    })
+    try:
+        new_slug = Slug(slug_id)
+        db.session.add(new_slug)
+        db.session.commit()
+        return jsonify({
+            'status': '200',
+            'message': 'Successfully sluggin'
+        })
+    except:
+        abort(401)
 
 
 if __name__ == '__main__':
