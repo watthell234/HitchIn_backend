@@ -33,7 +33,7 @@ def sign_up():
             'message': 'Successfully Signed Up'
         })
     else:
-        abort(401)
+        "fuck you"
 
 
 @app.route("/login", methods=['POST'])
@@ -51,7 +51,6 @@ def login():
 @app.route("/slug", methods=['POST'])
 def slug_checkin():
     slug_id = request.json.get('slugId', None)
-    print(slug_id)
     try:
         new_slug = Slug(slug_id)
         db.session.add(new_slug)
