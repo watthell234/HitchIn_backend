@@ -33,7 +33,7 @@ def sign_up():
             'message': 'Successfully Signed Up'
         })
     else:
-        "fuck you"
+        abort(401)
 
 
 @app.route("/login", methods=['POST'])
