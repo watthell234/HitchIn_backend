@@ -51,7 +51,8 @@ def login():
 @app.route("/slug", methods=['POST'])
 def slug_checkin():
     slug_id = request.json.get('slugId', None)
-    db.session.add(slug_id)
+    new_slug = Slug(slug_id)
+    db.session.add(new_slug)
     db.session.commit()
     return jsonify({
         'status': '200',
