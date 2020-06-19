@@ -52,7 +52,7 @@ def login():
 def slug_checkin():
     slug_id = request.json.get('slugId', None)
     try:
-        new_slug = Slug(slug_id)
+        new_slug = Slug(slug_id = slug_id)
         db.session.add(new_slug)
         db.session.commit()
         return jsonify({
