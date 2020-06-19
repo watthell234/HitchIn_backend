@@ -50,8 +50,13 @@ def login():
 
 @app.route("/slug", methods=['POST'])
 def slug_checkin():
-    carpool_id = request.json.get('carpoolId', None)
-    print(carpool_id)
+    slug_id = request.json.get('slugId', None)
+    db.session.add(slug_id)
+    db.session.commit()
+    return jsonify({
+        'status': '200',
+        'message': 'Successfully sluggin'
+    })
 
 
 if __name__ == '__main__':
