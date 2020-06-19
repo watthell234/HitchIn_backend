@@ -27,5 +27,5 @@ class Slug(db.Model):
     slug_id = db.Column(db.Integer, nullable=False)
 
 
-    def __init__(self, car_make, car_year, owner_email):
-        self.carpool_id = carpool_id
+    def __init__(self, slug_id):
+        self.slug_id = slug_id
