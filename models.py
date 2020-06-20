@@ -21,8 +21,8 @@ class Slug(db.Model):
     __tablename__ = "slugs"
     id = db.Column(db.Integer, primary_key=True)
     # car_id = db.Column(db.Integer, db.ForeignKey('drivers.id'))
-    # car_make = db.Column(db.String(18), unique=False)
-    # car_year = db.Column(db.Integer, unique=False)
+    # car_make = db.Column(db.String(18), nullable=False)
+    # car_year = db.Column(db.Integer, nullable=False)
     # owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
     slug_id = db.Column(db.Integer, nullable=False)
 
