@@ -62,7 +62,7 @@ def slug_checkin():
     except:
         abort(401)
 
-@app.route("/slug/id/<int: slug_id>", methods=['GET'])
+@app.route("/slug/id/<int:slug_id>", methods=['GET'])
 def pool_count(slug_id):
     slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id)
     return jsonify({
