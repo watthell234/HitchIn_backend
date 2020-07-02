@@ -1,7 +1,12 @@
 from app import db
+from datetime import datetime
+
+class TimestampMixin(object):
+    created_timestamp = db.Column(
+        db.DateTime, default=datetime.utcnow)
 
 # Create our database model
-class User(db.Model):
+class User(db.Model, TimestampMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     phone_number = db.Column(db.Integer, unique=True, nullable=False)
@@ -9,7 +14,6 @@ class User(db.Model):
     last_name = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64), unique=False)
-    time_created = db.Column(db.DateTime(timezone=True), server_default=db.sql.func.now())
 
     def __init__(self, phone_number, first_name, last_name, email, password):
         self.phone_number = phone_number
@@ -18,7 +22,7 @@ class User(db.Model):
         self.email = email
         self.password = password
 
-class Slug(db.Model):
+class Slug(db.Model, TimestampMixin ):
     __tablename__ = "slugs"
     id = db.Column(db.Integer, primary_key=True)
     # car_id = db.Column(db.Integer, db.ForeignKey('drivers.id'))
@@ -26,12 +30,19 @@ class Slug(db.Model):
     # car_year = db.Column(db.Integer, nullable=False)
     # owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
     slug_id = db.Column(db.Integer, nullable=False)
-    time_created = db.Column(db.DateTime(timezone=True), server_default=db.sql.func.now())
     time_ended = db.Column(db.DateTime(timezone=True))
 
-class Carpools(db.Model):
-    __tabllename__ = "carpools"
-    id = db.Column(db.Integer, primary_key=True)
+    def __init__(self, slug_id, time_created, time_ended):
+        self.slug_id = slug_id
+        self.time_created = time_created
+        self.time_ended = time_ended
+
+# class carpools(db.Model):
+#     __tabllename__ = "carpools"
+#     id = db.Column(db.Integer, primary_key=True)
+#     car_make = db.Column(db.String(18), nullable=False)
+#     car_year = db.Column(db.Integer, nullable=False)
+#     owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
 
 
     def __init__(self, slug_id):
