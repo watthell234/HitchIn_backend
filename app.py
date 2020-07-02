@@ -64,7 +64,7 @@ def slug_checkin():
 
 @app.route("/slug/id/<int:slug_id>", methods=['GET'])
 def pool_count(slug_id):
-    slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, slug_end_stamp == None).all()
+    slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all()
     slug_count = len(slugs)
     return jsonify({
                 'status': '200',
