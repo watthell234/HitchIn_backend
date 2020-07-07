@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 from flask_heroku import Heroku
 
@@ -62,15 +63,24 @@ def slug_checkin():
     except:
         abort(401)
 
-@app.route("/slug/id/<int:slug_id>", methods=['GET'])
+@app.route("/slug/id/<int:slug_id>", methods=['GET', 'POST'])
 def pool_count(slug_id):
-    slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all()
-    slug_count = len(slugs)
-    return jsonify({
-                'status': '200',
-                'slug_id': slug_id,
-                'slugs': slug_count
-    })
+    if request.method == 'GET'
+        slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all()
+        slug_count = len(slugs)
+        return jsonify({
+                    'status': '200',
+                    'slug_id': slug_id,
+                    'slugs': slug_count
+        })
+    if request.method == 'POST'
+        slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all().update().values({Slug.time_ended: datetime.utcnow})
+        db.session.commit()
+        return jsonify({
+            'status': '200'
+        })
+
+
 
 
 if __name__ == '__main__':
