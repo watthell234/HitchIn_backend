@@ -65,7 +65,8 @@ def slug_checkin():
 
 @app.route("/slug/id/<int:slug_id>", methods=['GET', 'POST'])
 def pool_count(slug_id):
-    if request.method == 'GET'
+
+    if request.method == 'GET':
         slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all()
         slug_count = len(slugs)
         return jsonify({
@@ -73,7 +74,7 @@ def pool_count(slug_id):
                     'slug_id': slug_id,
                     'slugs': slug_count
         })
-    if request.method == 'POST'
+    if request.method == 'POST':
         slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all().update().values({Slug.time_ended: datetime.utcnow})
         db.session.commit()
         return jsonify({
