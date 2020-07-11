@@ -1,6 +1,11 @@
 from app import db
 from datetime import datetime
 
+carpools = db.Table('carpool',
+    db.Column('cars_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True),
+    db.Column('users_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+)
+
 class TimestampMixin(object):
     created_timestamp = db.Column(
         db.DateTime, default=datetime.utcnow)
@@ -14,6 +19,7 @@ class User(db.Model, TimestampMixin):
     last_name = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(120), unique=True)
     password = db.Column(db.String(64), unique=False)
+    is_driver = db.Column(db.Boolean)
 
     def __init__(self, phone_number, first_name, last_name, email, password):
         self.phone_number = phone_number
@@ -22,28 +28,28 @@ class User(db.Model, TimestampMixin):
         self.email = email
         self.password = password
 
-class Slug(db.Model, TimestampMixin ):
-    __tablename__ = "slugs"
-    id = db.Column(db.Integer, primary_key=True)
-    # car_id = db.Column(db.Integer, db.ForeignKey('drivers.id'))
-    # car_make = db.Column(db.String(18), nullable=False)
-    # car_year = db.Column(db.Integer, nullable=False)
-    # owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
-    slug_id = db.Column(db.Integer, nullable=False)
-    time_ended = db.Column(db.DateTime(timezone=True))
 
-    def __init__(self, slug_id, time_created, time_ended):
-        self.slug_id = slug_id
-        self.time_created = time_created
+class Trips(db.Model, TimestampMixin):
+    __tablename__ = 'trips'
+    id = db.Column(db.Integer, primary_key=True)
+    time_ended = db.Column(db.DateTime(timezone=True))
+    carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('trips', lazy=True))
+    # car foreign car
+    # riders many trips to many users
+
+    def __init__(self, id, time_ended,):
+        self.id = id
         self.time_ended = time_ended
 
-# class carpools(db.Model):
-#     __tabllename__ = "carpools"
-#     id = db.Column(db.Integer, primary_key=True)
-#     car_make = db.Column(db.String(18), nullable=False)
-#     car_year = db.Column(db.Integer, nullable=False)
-#     owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
+class Cars(db.Model, TimestampMixin):
+    __tablename__ = 'cars'
+    id = db.Column(db.Integer, primary_key=True)
+    qr_string = db.Column(db.String(18), nullable=False)
+    # owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
+    # car_make = db.Column(db.String(18), nullable=False)
+    # car_year = db.Column(db.Integer, nullable=False)
 
 
-    def __init__(self, slug_id):
-        self.slug_id = slug_id
+    def __init__(self, id, qr_string):
+        self.id = id
+        self.qr_string = qr_string

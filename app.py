@@ -51,9 +51,9 @@ def login():
 
 @app.route("/slug", methods=['POST'])
 def slug_checkin():
-    slug_id = request.json.get('slugId', None)
+    slug_id = request.json.get('qrString', None)
     try:
-        new_slug = Slug(slug_id = slug_id)
+        new_slug = Car(qr_string = qr_string)
         db.session.add(new_slug)
         db.session.commit()
         return jsonify({
@@ -63,18 +63,19 @@ def slug_checkin():
     except:
         abort(401)
 
-@app.route("/slug/id/<int:slug_id>", methods=['GET', 'POST'])
+@app.route("/slug/<int:slug_id>", methods=['GET', 'PUT'])
 def pool_count(slug_id):
 
     if request.method == 'GET':
-        slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all()
+        slugs = (db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None)
+                          .all())
         slug_count = len(slugs)
         return jsonify({
                     'status': '200',
                     'slug_id': slug_id,
                     'slugs': slug_count
         })
-    if request.method == 'POST':
+    if request.method == 'PUT':
         slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all().update().values({Slug.time_ended: datetime.utcnow})
         db.session.commit()
         return jsonify({
