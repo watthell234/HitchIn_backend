@@ -33,7 +33,7 @@ class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)
     time_ended = db.Column(db.DateTime(timezone=True))
-    carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('trips', lazy=True))
+    carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('carpool', lazy=True))
     # car foreign car
     # riders many trips to many users
 
