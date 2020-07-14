@@ -1,10 +1,6 @@
 from app import db
 from datetime import datetime
 
-# carpools = db.Table('carpool',
-#     db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True),
-#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
-# )
 
 class TimestampMixin(object):
     created_timestamp = db.Column(
@@ -33,9 +29,8 @@ class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)
     time_ended = db.Column(db.DateTime(timezone=True))
-    rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
-    # carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('carpool', lazy=True))
-    car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True)
+    rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
+    car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
 
     def __init__(self, id, time_ended,):
         self.id = id
@@ -45,7 +40,7 @@ class Cars(db.Model, TimestampMixin):
     __tablename__ = 'cars'
     id = db.Column(db.Integer, primary_key=True)
     qr_string = db.Column(db.String(18), nullable=False)
-    # owner_id = db.Column(db.String(18), db.ForeignKey('users.email'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
     # car_make = db.Column(db.String(18), nullable=False)
     # car_year = db.Column(db.Integer, nullable=False)
 
