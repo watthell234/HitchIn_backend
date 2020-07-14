@@ -1,10 +1,10 @@
 from app import db
 from datetime import datetime
 
-carpools = db.Table('carpool',
-    db.Column('cars_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True),
-    db.Column('users_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
-)
+# carpools = db.Table('carpool',
+#     db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True),
+#     db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+# )
 
 class TimestampMixin(object):
     created_timestamp = db.Column(
@@ -33,9 +33,9 @@ class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)
     time_ended = db.Column(db.DateTime(timezone=True))
-    carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('carpool', lazy=True))
-    # car foreign car
-    # riders many trips to many users
+    rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True)
+    # carpools = db.relationship('Cars', secondary=carpools, backref=db.backref('carpool', lazy=True))
+    car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), primary_key=True)
 
     def __init__(self, id, time_ended,):
         self.id = id
