@@ -13,6 +13,7 @@ flask-migrate = "*"
 flask-script = "*"
 gunicorn = "*"
 flask-heroku = "*"
+werkzeug = "*"
 
 [requires]
 python_version = "3.7"

@@ -6,8 +6,8 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -67,7 +67,7 @@ def slug_checkin():
 def pool_count(slug_id):
 
     if request.method == 'GET':
-        slugs = (db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None)
+        slugs = (db.session.query(Trips).filter(Trips.car == car, Trips.time_ended == None)
                           .all())
         slug_count = len(slugs)
         return jsonify({

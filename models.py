@@ -1,6 +1,6 @@
 from app import db
 from datetime import datetime
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class TimestampMixin(object):
     created_timestamp = db.Column(
@@ -14,7 +14,7 @@ class User(db.Model, TimestampMixin):
     first_name = db.Column(db.String(18), nullable=False)
     last_name = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(120), unique=True)
-    password = db.Column(db.String(64), unique=False)
+    password_hash = db.Column(db.String(128))
     is_driver = db.Column(db.Boolean)
 
     def __init__(self, phone_number, first_name, last_name, email, password):
@@ -24,6 +24,12 @@ class User(db.Model, TimestampMixin):
         self.email = email
         self.password = password
 
+    # Create password hashing function
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password_hash(self, password):
+        self.check_password_hash(password)
 
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
