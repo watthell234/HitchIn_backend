@@ -26,7 +26,8 @@ def sign_up():
     password = request.json.get('password', None)
 
     if not db.session.query(User).filter(User.phone_number == phone_number).first():
-        new_user = User(phone_number, first_name, last_name, email, password)
+        new_user = User(phone_number, first_name, last_name, email)
+        new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         return jsonify({
