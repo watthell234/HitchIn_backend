@@ -17,18 +17,19 @@ class User(db.Model, TimestampMixin):
     password_hash = db.Column(db.String(128))
     is_driver = db.Column(db.Boolean)
 
-    def __init__(self, phone_number, first_name, last_name, email):
+    def __init__(self, phone_number, first_name, last_name, email, is_driver):
         self.phone_number = phone_number
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.is_driver = is_driver
 
     # Create password hashing function
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
 
-    def check_password_hash(self, password):
-        self.check_password_hash(password)
+    def check_password(self, password):
+        self.check_password_hash(self.password_hash, password)
 
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
