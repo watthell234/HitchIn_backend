@@ -42,7 +42,7 @@ def sign_up():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    user = db.session.query(User).filter(User.phone_number == phone_number, User.password == password).first()
+    user = db.session.query(User).filter(User.phone_number == phone_number).first()
     if  user and user.check_password(password):
         return jsonify({
             'status': '200',
