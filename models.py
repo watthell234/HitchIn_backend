@@ -29,7 +29,7 @@ class User(db.Model, TimestampMixin):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        self.check_password_hash(self.password_hash, password)
+        return check_password_hash(self.password_hash, password)
 
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
