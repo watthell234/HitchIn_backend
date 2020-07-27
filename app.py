@@ -24,7 +24,7 @@ def sign_up():
     last_name = request.json.get('lastName', None)
     email = request.json.get('email', None)
     password = request.json.get('password', None)
-    is_driver = False
+    is_driver = request.json.get('checked', None)
 
     if not db.session.query(User).filter(User.phone_number == phone_number).first():
         new_user = User(phone_number, first_name, last_name, email, is_driver)
