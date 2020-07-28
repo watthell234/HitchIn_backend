@@ -59,7 +59,7 @@ def login():
 def create_car():
     owner_id = 1
     letters = string.ascii_letters
-    qr_string = ''.join(random.choice(letters) for i in range(10))
+    qr_string = ''.join(random.choice(letters) for i in range(18))
     return None
 
 
