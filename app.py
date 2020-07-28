@@ -5,7 +5,6 @@ import random
 import string
 
 from flask_heroku import Heroku
-from models import *
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -13,6 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 heroku = Heroku(app)
 db = SQLAlchemy(app)
 
+from models import *
 
 @app.route("/")
 def index():
