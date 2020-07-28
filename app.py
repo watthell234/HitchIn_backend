@@ -7,6 +7,7 @@ import string
 
 from flask_heroku import Heroku
 
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
