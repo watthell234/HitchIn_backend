@@ -65,7 +65,7 @@ def create_car():
     license_plate = request.json.get('licensePlate', None)
     ezpass_tag = request.json.get('ezpassTag', None)
 
-    car = Cars(owner_id, qr_string, car_make, car_year, license_plate, ezpass_tag)
+    car = Cars(id = owner_id, qr_string, car_make, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
     return jsonify({
