@@ -57,7 +57,7 @@ def login():
 
 @app.route("/car", methods=['POST'])
 def create_car():
-    owner_id = 1
+    id = 1
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
     car_make = request.json.get('carMake', None)
@@ -65,7 +65,7 @@ def create_car():
     license_plate = request.json.get('licensePlate', None)
     ezpass_tag = request.json.get('ezpassTag', None)
 
-    car = Cars(id = owner_id, qr_string, car_make, car_year, license_plate, ezpass_tag)
+    car = Cars(id, qr_string, car_make, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
     return jsonify({
