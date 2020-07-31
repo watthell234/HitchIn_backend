@@ -38,9 +38,11 @@ class Trips(db.Model, TimestampMixin):
     rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
     car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
 
-    def __init__(self, id, time_ended,):
+    def __init__(self, id, time_ended, rider, car):
         self.id = id
         self.time_ended = time_ended
+        self.rider = rider
+        self.car = car
 
 class Cars(db.Model, TimestampMixin):
     __tablename__ = 'cars'
@@ -53,6 +55,10 @@ class Cars(db.Model, TimestampMixin):
     ezpass_tag = db.Column(db.String(18), nullable=False)
 
 
-    def __init__(self, id, qr_string):
+    def __init__(self, id, qr_string, car_make, car_year, license_plate, ezpass_tag):
         self.id = id
         self.qr_string = qr_string
+        self.car_make = car_make
+        self.car_year = car_year
+        self.license_plate = license_plate
+        self.ezpass_tag = ezpass_tag
