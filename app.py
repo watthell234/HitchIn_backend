@@ -60,6 +60,10 @@ def create_car():
     owner_id = 1
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
+    car_make = request.json.get('carMake', None)
+    car_year = request.json.get('carYear', None)
+    license_plate = request.json.get('licensePlate', None)
+    ezpass_tag = request.json.get('ezpassTag', None)
     return None
 
 
