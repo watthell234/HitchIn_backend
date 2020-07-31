@@ -47,8 +47,10 @@ class Cars(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     qr_string = db.Column(db.String(18), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
-    # car_make = db.Column(db.String(18), nullable=False)
-    # car_year = db.Column(db.Integer, nullable=False)
+    car_make = db.Column(db.String(18), nullable=False)
+    car_year = db.Column(db.Integer, nullable=False)
+    license_plate = db.Column(db.String(8), nullable=False)
+    ezpass_tag = db.Column(db.String(18), nullable=False)
 
 
     def __init__(self, id, qr_string):

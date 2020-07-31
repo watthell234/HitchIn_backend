@@ -64,7 +64,15 @@ def create_car():
     car_year = request.json.get('carYear', None)
     license_plate = request.json.get('licensePlate', None)
     ezpass_tag = request.json.get('ezpassTag', None)
-    return None
+
+    car = Car(owner_id, qr_string, car_make, car_year, license_plate, ezpass_tag)
+    db.session.add(car)
+    db.session.commit()
+    return jsonify({
+        'status': '200',
+        'message': 'Successfully registered car'
+
+    })
 
 
 @app.route("/slug", methods=['POST'])
