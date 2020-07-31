@@ -57,7 +57,7 @@ def login():
 
 @app.route("/car", methods=['POST'])
 def create_car():
-    id = 1
+    owner_id = 1
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
     car_make = request.json.get('carMake', None)
