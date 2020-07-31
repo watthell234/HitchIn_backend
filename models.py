@@ -55,8 +55,9 @@ class Cars(db.Model, TimestampMixin):
     ezpass_tag = db.Column(db.String(18), nullable=False)
 
 
-    def __init__(self, qr_string, car_make, car_year, license_plate, ezpass_tag):
+    def __init__(self, qr_string, owner_id, car_make, car_year, license_plate, ezpass_tag):
         self.qr_string = qr_string
+        self.owner_id = owner_id
         self.car_make = car_make
         self.car_year = car_year
         self.license_plate = license_plate
