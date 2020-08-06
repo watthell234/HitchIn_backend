@@ -36,7 +36,7 @@ def sign_up():
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up'
-            'id': db.session.query(User).order_by(desc(User.created_timestamp)).first()
+            'id': db.session.query(User).order_by(desc(created_timestamp)).first()
         })
     else:
         abort(401)
