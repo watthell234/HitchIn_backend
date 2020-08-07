@@ -37,7 +37,7 @@ def sign_up():
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
-            'id': created_id.id
+            'id': string(created_id.id)
         })
     else:
         abort(401)
@@ -59,7 +59,7 @@ def login():
 
 @app.route("/car", methods=['POST'])
 def create_car():
-    owner_id = 1
+    owner_id = request.json.get('userId', None)
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
     car_make = request.json.get('carMake', None)
