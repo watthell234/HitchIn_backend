@@ -33,10 +33,12 @@ def sign_up():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
+        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
+        print(created_id)
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
-            'id': db.session.query(User).order_by(User.created_timestamp.desc()).first()
+            'id': 1
         })
     else:
         abort(401)
