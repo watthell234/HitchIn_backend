@@ -37,7 +37,7 @@ def sign_up():
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
-            'id': string(created_id.id)
+            'id': str(created_id.id)
         })
     else:
         abort(401)
