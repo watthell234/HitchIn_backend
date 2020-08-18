@@ -97,7 +97,7 @@ def pool_count(car_id):
 
     if request.method == 'GET':
 
-        slugs = (db.session.query(Trips).filter(Trips.car_id == car_id, Trips.time_ended == None)
+        slugs = (db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None)
                  .all())
         slug_count = len(slugs)
         return jsonify({
