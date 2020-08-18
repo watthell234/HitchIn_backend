@@ -14,6 +14,7 @@ flask-script = "*"
 gunicorn = "*"
 flask-heroku = "*"
 werkzeug = "*"
+sqlalchemy-utils = "*"
 
 [requires]
 python_version = "3.7"

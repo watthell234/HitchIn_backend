@@ -92,11 +92,12 @@ def slug_checkin():
         abort(401)
 
 
-@app.route("/slug/<int:slug_id>", methods=['GET', 'PUT'])
-def pool_count(slug_id):
+@app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
+def pool_count(car_id):
 
     if request.method == 'GET':
-        slugs = (db.session.query(Trips).filter(Trips.car == car, Trips.time_ended == None)
+
+        slugs = (db.session.query(Trips).filter(Trips.car_id == car_id, Trips.time_ended == None)
                  .all())
         slug_count = len(slugs)
         return jsonify({
