@@ -102,7 +102,7 @@ def pool_count(car_id):
         slug_count = len(slugs)
         return jsonify({
             'status': '200',
-            'slug_id': slug_id,
+            'car_id': car_id,
             'slugs': slug_count
         })
     # if request.method == 'PUT':
