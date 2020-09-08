@@ -8,8 +8,8 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -70,10 +70,12 @@ def create_car():
     car = Cars(qr_string, owner_id, car_make, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
+    created_car_id = db.session.query(Cars)
     return jsonify({
         'status': '200',
-        'message': 'Successfully registered car'
-
+        'message': 'Successfully registered car',
+        'id': str(created_car_id.id),
+        'qr_id': qr_string
     })
 
 
