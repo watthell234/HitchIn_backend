@@ -70,7 +70,7 @@ def create_car():
     car = Cars(qr_string, owner_id, car_make, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
-    created_car_id = db.session.query(Cars)
+    created_car_id = db.session.query(Cars).order_by(Cars.created_timestamp.desc()).first()
     return jsonify({
         'status': '200',
         'message': 'Successfully registered car',
