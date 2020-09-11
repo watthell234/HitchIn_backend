@@ -79,9 +79,9 @@ def create_car():
     })
 
 
-@app.route("/slug", methods=['POST'])
+@app.route("/checkin", methods=['POST'])
 def slug_checkin():
-    slug_id = request.json.get('qrString', None)
+    car_qr = request.json.get('qrString', None)
     try:
         new_slug = Car(qr_string=qr_string)
         db.session.add(new_slug)
