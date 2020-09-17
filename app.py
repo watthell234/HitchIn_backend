@@ -84,18 +84,18 @@ def create_car():
 @app.route("/checkin", methods=['POST'])
 def checkin():
     car_qr = request.json.get('carQr', None)
-    try:
-        car = db.session.query(Cars).filter(Cars.qr_string == car_qr)
-        print(car.id)
-        checkin = Trips(time_ended == null, rider == 19, car == car.id)
-        db.session.add(checkin)
-        db.session.commit()
-        return jsonify({
-            'status': '200',
-            'message': 'Successfully sluggin'
-        })
-    except:
-        abort(404)
+    # try:
+    car = db.session.query(Cars).filter(Cars.qr_string == str(car_qr))
+    print(car.id)
+    checkin = Trips(time_ended == null, rider == 19, car == car.id)
+    db.session.add(checkin)
+    db.session.commit()
+    return jsonify({
+        'status': '200',
+        'message': 'Successfully sluggin'
+    })
+    # except:
+    #     abort(404)
 
 
 @app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
