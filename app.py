@@ -85,7 +85,7 @@ def create_car():
 def checkin():
     car_qr = request.json.get('carQr', None)
     # try:
-    logged_car = db.session.query(Cars).filter(Cars.qr_string == str(car_qr)).first()
+    logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
     print(logged_car.id)
     checkin = Trips(time_ended == null, rider == 19, car == car.id)
     db.session.add(checkin)
