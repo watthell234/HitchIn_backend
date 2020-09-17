@@ -80,28 +80,21 @@ def create_car():
         'qr_id': qr_string
     })
 
-# @app.route("/car_qr", methods=['GET'])
-# def retrieve_by_qr():
-#     car_qr = "vfmDelWnIvtKrkHKRP"
-#     car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
-#     return str(car.id)
 
 @app.route("/checkin", methods=['POST'])
 def checkin():
     car_qr = request.json.get('carQr', None)
-    print(type(car_qr))
-    # try:
-    logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
-    print(str(logged_car))
-    checkin = Trips(None, 19, logged_car.id)
-    db.session.add(checkin)
-    db.session.commit()
-    return jsonify({
-        'status': '200',
-        'message': 'Successfully sluggin'
-    })
-    # except:
-    #     abort(404)
+    try:
+        logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
+        checkin = Trips(None, 19, logged_car.id)
+        db.session.add(checkin)
+        db.session.commit()
+        return jsonify({
+            'status': '200',
+            'message': 'Successfully sluggin'
+        })
+    except:
+        abort(404)
 
 
 @app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
