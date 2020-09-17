@@ -92,8 +92,8 @@ def checkin():
     print(type(car_qr))
     # try:
     logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
-    print(str(logged_car.id))
-    checkin = Trips(time_ended == null, rider == 19, car == car.id)
+    print(str(logged_car))
+    checkin = Trips(None, 19, car.id)
     db.session.add(checkin)
     db.session.commit()
     return jsonify({
