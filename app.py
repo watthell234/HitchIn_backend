@@ -84,7 +84,6 @@ def create_car():
 @app.route("/checkin", methods=['POST'])
 def checkin():
     car_qr = request.json.get('carQr', None)
-    print(car_qr)
     try:
         car = db.session.query(Cars).filter(Cars.qr_string == car_qr)
         print(car.id)
@@ -96,7 +95,7 @@ def checkin():
             'message': 'Successfully sluggin'
         })
     except:
-        abort(401)
+        abort(404)
 
 
 @app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
