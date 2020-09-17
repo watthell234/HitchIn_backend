@@ -86,7 +86,7 @@ def slug_checkin():
     car_qr = request.json.get('carQr', None)
     try:
         car = db.session.query(Cars).filter(Cars.qr_string == qr_string)
-        checkin = Trips(time_ended == null, rider == user, car == car.id)
+        checkin = Trips(time_ended == null, rider == 19, car == car.id)
         db.session.add(checkin)
         db.session.commit()
         return jsonify({
