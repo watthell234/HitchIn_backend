@@ -38,8 +38,7 @@ class Trips(db.Model, TimestampMixin):
     rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
     car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
 
-    def __init__(self, id, time_ended, rider, car):
-        self.id = id
+    def __init__(self, time_ended, rider, car):
         self.time_ended = time_ended
         self.rider = rider
         self.car = car

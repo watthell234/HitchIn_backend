@@ -48,10 +48,12 @@ def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
     user = db.session.query(User).filter(User.phone_number == phone_number).first()
+    print(user.id)
     if user and user.check_password(password):
         return jsonify({
             'status': '200',
-            'message': 'Successfully Logged in'
+            'message': 'Successfully Logged in',
+            'id': str(user.id)
         })
     else:
         abort(403)
@@ -83,7 +85,8 @@ def create_car():
 def slug_checkin():
     car_qr = request.json.get('carQr', None)
     try:
-        new_slug = Car(qr_string=qr_string)
+        car = db.session.query(Cars).filter(Cars.qr_string == qr_string)
+        Trips(time_ended == null, rider == user, car == car.id)
         db.session.add(new_slug)
         db.session.commit()
         return jsonify({
