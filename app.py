@@ -82,10 +82,12 @@ def create_car():
 
 
 @app.route("/checkin", methods=['POST'])
-def slug_checkin():
+def checkin():
     car_qr = request.json.get('carQr', None)
+    print(car_qr)
     try:
         car = db.session.query(Cars).filter(Cars.qr_string == car_qr)
+        print(car.id)
         checkin = Trips(time_ended == null, rider == 19, car == car.id)
         db.session.add(checkin)
         db.session.commit()
