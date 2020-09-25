@@ -110,13 +110,13 @@ def pool_count(car_id):
             'car_id': car_id,
             'slugs': passenger_count
         })
-    # if request.method == 'PUT':
-    #     slugs = db.session.query(Slug).filter(Slug.slug_id == slug_id, Slug.time_ended == None).all(
-    #     ).update().values({Slug.time_ended: datetime.utcnow})
-    #     db.session.commit()
-    #     return jsonify({
-    #         'status': '200'
-    #     })
+    if request.method == 'PUT':
+        end_trip = db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None).all(
+        ).update().values({Trips.time_ended: datetime.utcnow})
+        db.session.commit()
+        return jsonify({
+            'status': '200'
+        })
 
 
 if __name__ == '__main__':
