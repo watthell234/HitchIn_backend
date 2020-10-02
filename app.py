@@ -86,7 +86,7 @@ def checkin():
     car_qr = request.json.get('carQr', None)
     try:
         logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
-        checkin = Trips(None, 19, logged_car.id)
+        checkin = Trips(None, 1, logged_car.id)
         db.session.add(checkin)
         db.session.commit()
         return jsonify({
