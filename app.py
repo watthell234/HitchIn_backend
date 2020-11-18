@@ -30,7 +30,6 @@ def identity(payload):
 
 
 @app.route("/sign-up", methods=['POST'])
-@jwt_required()
 def sign_up():
     phone_number = request.json.get('phoneNumber', None)
     first_name = request.json.get('firstName', None)
@@ -56,6 +55,7 @@ def sign_up():
 
 
 @app.route("/login", methods=['POST'])
+@jwt_required()
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
