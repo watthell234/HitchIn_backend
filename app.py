@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt import JWT, jwt_required, current_identity
 from datetime import datetime
 import random
 import string
@@ -8,6 +9,7 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+jwt = JWT(app, authenticate, identity)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 heroku = Heroku(app)
 db = SQLAlchemy(app)
@@ -18,8 +20,11 @@ from models import *
 def index():
     return "<h1>Welcome to HitchIn</h1>"
 
+def authenticate(phone_number, password):
+    user = db.session.query(User).filter(User.phone_number == phone_number).first()
 
 @app.route("/sign-up", methods=['POST'])
+@jwt_required()
 def sign_up():
     phone_number = request.json.get('phoneNumber', None)
     first_name = request.json.get('firstName', None)
@@ -28,16 +33,17 @@ def sign_up():
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
 
-    if not db.session.query(User).filter(User.phone_number == phone_number).first():
+    if not db.session.query(User).filter(User.phone_number == phone_number).scalar():
         new_user = User(phone_number, first_name, last_name, email, is_driver)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
+        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).scalar()
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
-            'id': str(created_id.id)
+            'id': str(created_id.id),
+            'access token': str(current_identity)
         })
     else:
         abort(401)
@@ -47,8 +53,7 @@ def sign_up():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    user = db.session.query(User).filter(User.phone_number == phone_number).first()
-    print(user.id)
+    user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
     if user and user.check_password(password):
         return jsonify({
             'status': '200',
@@ -86,7 +91,7 @@ def checkin():
     car_qr = request.json.get('carQr', None)
     try:
         logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
-        checkin = Trips(None, 1, logged_car.id)
+        checkin = Trips(None, 2, logged_car.id)
         db.session.add(checkin)
         db.session.commit()
         return jsonify({
