@@ -9,7 +9,6 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-jwt = JWT(app, authenticate, identity)
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 heroku = Heroku(app)
 db = SQLAlchemy(app)
@@ -21,7 +20,14 @@ def index():
     return "<h1>Welcome to HitchIn</h1>"
 
 def authenticate(phone_number, password):
-    user = db.session.query(User).filter(User.phone_number == phone_number).first()
+    user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+    if user.check_password(password):
+        return user
+
+def identity(payload):
+    user_id = payload['identity']
+    return db.session.query(User).filter(User.id == user_id).scalar
+
 
 @app.route("/sign-up", methods=['POST'])
 @jwt_required()
@@ -53,14 +59,14 @@ def sign_up():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
-    if user and user.check_password(password):
+    try:
+        authenticate(phone_number, password)
         return jsonify({
             'status': '200',
             'message': 'Successfully Logged in',
             'id': str(user.id)
         })
-    else:
+    except:
         abort(403)
 
 
@@ -123,6 +129,7 @@ def pool_count(car_id):
             'status': '200'
         })
 
+jwt = JWT(app, authenticate, identity)
 
 if __name__ == '__main__':
     app.debug = True
