@@ -9,8 +9,8 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -19,7 +19,7 @@ from models import *
 def index():
     return "<h1>Welcome to HitchIn</h1>"
 
-def authenticate(phone_number, password):
+def authenticate(username, password):
     user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
     if user.check_password(password):
         return user
@@ -43,12 +43,12 @@ def sign_up():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).scalar()
+        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
             'id': str(created_id.id),
-            'access token': str(current_identity)
+
         })
     else:
         abort(401)
@@ -64,7 +64,8 @@ def login():
         return jsonify({
             'status': '200',
             'message': 'Successfully Logged in',
-            'id': str(user.id)
+            'id': str(user.id),
+            'access token': str(current_identity)
         })
     except:
         abort(403)
