@@ -9,8 +9,9 @@ from flask_heroku import Heroku
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+app.config['SECRET_KEY'] = 'super-secret'
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -20,14 +21,15 @@ def index():
     return "<h1>Welcome to HitchIn</h1>"
 
 def authenticate(username, password):
-    user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
-    if user.check_password(password):
+    user = db.session.query(User).filter(User.phone_number == username).first()
+    if user and user.check_password(password):
         return user
 
 def identity(payload):
     user_id = payload['identity']
     return db.session.query(User).filter(User.id == user_id).scalar
 
+jwt = JWT(app, authenticate, identity)
 
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
@@ -59,16 +61,25 @@ def sign_up():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    try:
-        authenticate(phone_number, password)
+    logged_user = authenticate(phone_number, password)
+    if logged_user:
         return jsonify({
             'status': '200',
             'message': 'Successfully Logged in',
-            'id': str(user.id),
-            'access token': str(current_identity)
+            'id': logged_user.id
         })
-    except:
+    else:
         abort(403)
+    # try:
+    #     authenticate(phone_number, password)
+    #     return jsonify({
+    #         'status': '200',
+    #         'message': 'Successfully Logged in',
+    #         'id': str(user.id)
+    #         # 'access token': str(current_identity)
+    #     })
+    # except:
+    #     abort(401)
 
 
 @app.route("/car", methods=['POST'])
@@ -130,7 +141,7 @@ def pool_count(car_id):
             'status': '200'
         })
 
-jwt = JWT(app, authenticate, identity)
+
 
 if __name__ == '__main__':
     app.debug = True
