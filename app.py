@@ -46,11 +46,13 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
+        request_token = requests.post('https://hitchin-server.herokuapp.com/auth', data = {'username': phone_number, 'password': password})
+        auth_token = request_token.json()
+        print(auth_token)
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
             'id': str(created_id.id),
-
         })
     else:
         abort(401)
@@ -70,16 +72,6 @@ def login():
         })
     else:
         abort(403)
-    # try:
-    #     authenticate(phone_number, password)
-    #     return jsonify({
-    #         'status': '200',
-    #         'message': 'Successfully Logged in',
-    #         'id': str(user.id)
-    #         # 'access token': str(current_identity)
-    #     })
-    # except:
-    #     abort(401)
 
 
 @app.route("/car", methods=['POST'])
