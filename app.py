@@ -47,7 +47,7 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
-        #TODO authenticate user after creating in order to make token request
+        authenticate(created_id.phone_number, password)
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth', data = {'username': phone_number, 'password': password})
         print(request_token)
         return jsonify({
