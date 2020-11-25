@@ -50,7 +50,7 @@ def sign_up():
         authenticate(created_id.phone_number, password)
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
                     json={"username": str(phone_number), "password": password})
-        print(request_token.json)
+        print(request_token.json())
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
