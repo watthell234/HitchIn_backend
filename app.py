@@ -60,7 +60,6 @@ def sign_up():
 
 
 @app.route("/login", methods=['POST'])
-@jwt_required()
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
@@ -76,6 +75,7 @@ def login():
 
 
 @app.route("/car", methods=['POST'])
+@jwt_required()
 def create_car():
     owner_id = request.json.get('userId', None)
     letters = string.ascii_letters
