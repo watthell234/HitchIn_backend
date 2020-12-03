@@ -5,6 +5,7 @@ from datetime import datetime
 import random
 import string
 import requests
+from flask_socketio import SocketIO
 
 from flask_heroku import Heroku
 
@@ -134,8 +135,11 @@ def pool_count(car_id):
             'status': '200'
         })
 
+socketio = SocketIO(app)
+
 
 
 if __name__ == '__main__':
     app.debug = True
     app.run()
+    socketio.run()

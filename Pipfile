@@ -17,6 +17,7 @@ werkzeug = "*"
 sqlalchemy-utils = "*"
 flask-jwt = "*"
 requests = "*"
+flask-socketio = "*"
 
 [requires]
 python_version = "3.7"
