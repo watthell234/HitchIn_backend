@@ -18,6 +18,7 @@ sqlalchemy-utils = "*"
 flask-jwt = "*"
 requests = "*"
 flask-socketio = "*"
+gevent-websocket = "*"
 
 [requires]
 python_version = "3.7"
