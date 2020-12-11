@@ -141,9 +141,9 @@ socketio = SocketIO(app)
 def test_messade():
     emit('my response', {'data': message['data']})
 
-@socketio.on('connect', namespace='/test')
+@socketio.on('connect')
 def test_connect():
-    emit('my response', {'data':'Connected'})
+    emit('my response', {'data':'I am Connected'})
 
 @socketio.on('disconnect', namespace='/test')
 def test_disconnect():
