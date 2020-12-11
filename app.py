@@ -10,6 +10,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, ro
 from flask_heroku import Heroku
 
 app = Flask(__name__)
+socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 app.config['SECRET_KEY'] = 'super-secret'
@@ -135,7 +136,6 @@ def pool_count(car_id):
             'status': '200'
         })
 
-socketio = SocketIO(app)
 
 @socketio.on('my event')
 def test_messade():
@@ -143,7 +143,7 @@ def test_messade():
 
 @socketio.on('connect')
 def test_connect():
-    emit('my_response', {'data':'I am Connected'})
+    emit('my_response', {'data': 'I am Connected'})
 
 @socketio.on('disconnect')
 def test_disconnect():
