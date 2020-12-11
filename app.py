@@ -137,7 +137,7 @@ def pool_count(car_id):
 
 socketio = SocketIO(app)
 
-@socketio.on('my event', namespace='/test')
+@socketio.on('my event')
 def test_messade():
     emit('my response', {'data': message['data']})
 
@@ -145,7 +145,7 @@ def test_messade():
 def test_connect():
     emit('my response', {'data':'I am Connected'})
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect')
 def test_disconnect():
     print('Disconnect')
 
