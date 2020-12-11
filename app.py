@@ -5,7 +5,7 @@ from datetime import datetime
 import random
 import string
 import requests
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
 
 from flask_heroku import Heroku
 
@@ -139,11 +139,11 @@ socketio = SocketIO(app)
 
 @socketio.on('my event')
 def test_messade():
-    emit('my response', {'data': message['data']})
+    emit('my_response', {'data': message['data']})
 
 @socketio.on('connect')
 def test_connect():
-    emit('my response', {'data':'I am Connected'})
+    emit('my_response', {'data':'I am Connected'})
 
 @socketio.on('disconnect')
 def test_disconnect():
