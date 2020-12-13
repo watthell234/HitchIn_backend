@@ -153,5 +153,5 @@ def test_disconnect():
 
 if __name__ == '__main__':
     app.debug = True
-    app.run()
+    # app.run()
     socketio.run()
