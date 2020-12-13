@@ -19,6 +19,8 @@ flask-jwt = "*"
 requests = "*"
 flask-socketio = "*"
 gevent-websocket = "*"
+python-socketio = "*"
+python-engineio = "*"
 
 [requires]
 python_version = "3.7"

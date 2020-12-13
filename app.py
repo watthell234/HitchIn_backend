@@ -136,15 +136,17 @@ def pool_count(car_id):
             'status': '200'
         })
 
-
-@socketio.on('my event')
-def test_message():
-    emit('my_response', {'data': message['data']})
+#
+# @socketio.on('my event')
+# def test_message():
+#     emit('my_response', {'data': 'data'})
 
 @socketio.on('connect')
 def test_connect():
-    emit('my_response', {'data': 'I am Connected'}, broadcast=True)
     print("I AM CONNECTED")
+    json = {'data': 'I am Connected'}
+    emit('my_response', json)
+
 
 @socketio.on('disconnect')
 def test_disconnect():
@@ -154,4 +156,4 @@ def test_disconnect():
 if __name__ == '__main__':
     app.debug = True
     # app.run()
-    socketio.run()
+    socketio.run(app)
