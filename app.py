@@ -144,6 +144,7 @@ def test_messade():
 @socketio.on('connect')
 def test_connect():
     emit('my_response', {'data': 'I am Connected'})
+    print("I AM CONNECTED")
 
 @socketio.on('disconnect')
 def test_disconnect():
