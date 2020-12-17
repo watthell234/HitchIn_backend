@@ -100,6 +100,7 @@ def create_car():
 
 
 @app.route("/checkin", methods=['POST'])
+@jwt_required()
 def checkin():
     car_qr = request.json.get('carQr', None)
     try:
@@ -116,6 +117,7 @@ def checkin():
 
 
 @app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
+@jwt_required()
 def pool_count(car_id):
 
     if request.method == 'GET':
@@ -136,10 +138,10 @@ def pool_count(car_id):
             'status': '200'
         })
 
-#
-# @socketio.on('my event')
-# def test_message():
-#     emit('my_response', {'data': 'data'})
+
+@socketio.on('my event')
+def test_message():
+    emit('event', {'data': 'data'})
 
 @socketio.on('connect')
 def test_connect():
