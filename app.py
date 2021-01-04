@@ -142,7 +142,7 @@ def pool_count(car_id):
 @socketio.on('event')
 def test_message(message):
     print("Button was pressed")
-    json = {'data': message}
+    json = {'data': message + " from server"}
     emit('event', json, broadcast=True)
 
 @socketio.on('connect')
