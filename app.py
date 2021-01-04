@@ -139,10 +139,10 @@ def pool_count(car_id):
         })
 
 
-@socketio.on('my event')
+@socketio.on('event')
 def test_message():
     json = {'data': 'data'}
-    emit('event', {'data': 'data'})
+    emit('event', json)
 
 @socketio.on('connect')
 def test_connect():
