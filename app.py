@@ -103,6 +103,7 @@ def create_car():
 @jwt_required()
 def checkin():
     car_qr = request.json.get('carQr', None)
+    user_id = request.json.get('userId', None)
     try:
         logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
         checkin = Trips(None, 2, logged_car.id)
