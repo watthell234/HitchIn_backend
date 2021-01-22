@@ -118,7 +118,7 @@ def checkin():
 
 
 ## TODO: test endpoint
-@app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
+@app.route("/pooltrips/<int:car_id>", methods=['GET', 'PUT'])
 @jwt_required()
 def pool_trips(car_id):
 
