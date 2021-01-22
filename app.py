@@ -117,9 +117,10 @@ def checkin():
         abort(404)
 
 
+## TODO: test endpoint
 @app.route("/cartrips/<int:car_id>", methods=['GET', 'PUT'])
 @jwt_required()
-def pool_count(car_id):
+def pool_trips(car_id):
 
     if request.method == 'GET':
 
