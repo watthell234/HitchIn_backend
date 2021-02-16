@@ -12,7 +12,7 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 app.config['SECRET_KEY'] = 'super-secret'
 # heroku = Heroku(app)
 db = SQLAlchemy(app)
