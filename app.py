@@ -14,7 +14,7 @@ socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 app.config['SECRET_KEY'] = 'super-secret'
-# heroku = Heroku(app)
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
