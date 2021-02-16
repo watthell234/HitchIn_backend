@@ -1,6 +1,8 @@
 from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
+import phonenumbers
+from sqlalchemy_utils import PhoneNumberType
 
 class TimestampMixin(object):
     created_timestamp = db.Column(
@@ -10,7 +12,7 @@ class TimestampMixin(object):
 class User(db.Model, TimestampMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    phone_number = db.Column(db.Integer, unique=True, nullable=False)
+    phone_number = db.Column(PhoneNumberType(), unique=True, nullable=False)
     first_name = db.Column(db.String(18), nullable=False)
     last_name = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(120), unique=True)

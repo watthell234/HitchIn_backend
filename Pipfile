@@ -21,6 +21,7 @@ flask-socketio = "*"
 gevent-websocket = "*"
 python-socketio = "*"
 python-engineio = "*"
+phonenumbers = "*"
 
 [requires]
 python_version = "3.7"
