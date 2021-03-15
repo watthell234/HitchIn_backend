@@ -145,7 +145,7 @@ def pool_trips(car_id):
 def test_message(message):
     print("Button was pressed")
     json = {'data': message + " from server"}
-    emit('event', json, broadcast=True)
+    emit('events', json, broadcast=True)
 
 @socketio.on('join')
 def on_join(data):
