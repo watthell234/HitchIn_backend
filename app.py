@@ -5,7 +5,7 @@ from datetime import datetime
 import random
 import string
 import requests
-from flask_socketio import SocketIO, emit, join_room, leave_room, close_room, rooms, disconnect
+from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 
 from flask_heroku import Heroku
 
