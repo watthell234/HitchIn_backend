@@ -152,7 +152,8 @@ def on_join(data):
     username = data['username']
     pool_id = data['pool_id']
     join_room(pool_id)
-    send(username + 'has joined the carpool', room=pool_id)
+    data = {'data': username + 'has joined the carpool'}
+    emit('room', data, room=pool_id)
 
 @socketio.on('leave')
 def on_leave(data):
