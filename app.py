@@ -160,7 +160,7 @@ def on_leave(data):
     username = data['username']
     pool_id = data['pool_id']
     leave_room(pool_id)
-    data = {'data': username + ' has joined the carpool: ' + str(pool_id)}
+    data = {'data': username + ' has left the carpool: ' + str(pool_id)}
     emit( 'roomexit', data, room=pool_id)
 
 @socketio.on('connect')
