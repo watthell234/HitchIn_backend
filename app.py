@@ -152,7 +152,18 @@ def on_join(data):
     username = data['username']
     pool_id = data['pool_id']
     join_room(pool_id)
-    data = {'data': username + ' has joined the carpool: ' + str(pool_id)}
+
+    get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
+    passng_checked = (db.session.query(Trips).filter(Trips.car == get_car_id.car_id, Trips.time_ended == None)
+             .all())
+    passenger_count = len(passng_checked)
+    # return jsonify({
+    #     'status': '200',
+    #     'car_id': car_id,
+    #     'slugs': passenger_count
+    # })
+    data = {'data': username + ' has joined the carpool: ' + str(pool_id)
+                + '. There are: ' + passenger_count + ' in carpool'}
     emit('roomjoin', data, room=pool_id)
 
 @socketio.on('leave')
