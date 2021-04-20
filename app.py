@@ -163,7 +163,7 @@ def on_join(data):
     #     'slugs': passenger_count
     # })
     data = {'data': username + ' has joined the carpool: ' + str(pool_id)
-                + '. There are: ' + passenger_count + ' in carpool'}
+                + '. There are: ' + str(passenger_count) + ' in carpool'}
     emit('roomjoin', data, room=pool_id)
 
 @socketio.on('leave')
