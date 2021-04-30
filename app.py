@@ -154,7 +154,7 @@ def on_join(data):
     join_room(pool_id)
 
     get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    passng_checked = (db.session.query(Trips).filter(Trips.car == get_car_id.car_id, Trips.time_ended == None)
+    passng_checked = (db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None)
              .all())
     passenger_count = len(passng_checked)
     # return jsonify({
