@@ -170,11 +170,16 @@ def on_join(data):
 def on_leave(data):
     username = data['username']
     pool_id = data['pool_id']
+    get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
+    end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all(
+    ).update().values({Trips.time_ended: datetime.utcnow})
+    db.session.commit()
     leave_room(pool_id)
     data = {'data': username + ' has left the carpool: ' + str(pool_id)}
     emit( 'roomexit', data, room=pool_id)
 
 @socketio.on('connect')
+@jwt_required()
 def test_connect():
     print("I AM CONNECTED")
     json = {'data': 'I am Connected'}
