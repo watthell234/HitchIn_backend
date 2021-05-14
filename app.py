@@ -179,7 +179,6 @@ def on_leave(data):
     emit( 'roomexit', data, room=pool_id)
 
 @socketio.on('connect')
-@jwt_required()
 def test_connect():
     print("I AM CONNECTED")
     json = {'data': 'I am Connected'}
