@@ -117,7 +117,6 @@ def checkin():
         abort(404)
 
 
-## TODO: test endpoint
 @app.route("/pooltrips/<int:car_id>", methods=['GET', 'PUT'])
 @jwt_required()
 def pool_trips(car_id):
@@ -140,12 +139,14 @@ def pool_trips(car_id):
             'status': '200'
         })
 
-# testing request origin change
+
+
+
 @socketio.on('event')
 def test_message(message):
     print("Button was pressed")
     json = {'data': message + " from server"}
-    emit('events', json, broadcast=True)
+    emit('events', json)
 
 @socketio.on('join')
 def on_join(data):
@@ -176,7 +177,7 @@ def on_leave(data):
     db.session.commit()
     leave_room(pool_id)
     data = {'data': username + ' has left the carpool: ' + str(pool_id)}
-    emit( 'roomexit', data, to=pool_id)
+    emit( 'endtrip', data, to=pool_id)
 
 @socketio.on('connect')
 def test_connect():
