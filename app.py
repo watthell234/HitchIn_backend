@@ -164,7 +164,7 @@ def on_join(data):
     # })
     data = {'data': username + ' has joined the carpool: ' + str(pool_id)
                 + '. There are: ' + str(passenger_count) + ' in carpool'}
-    emit('roomjoin', data, room=pool_id)
+    emit('roomjoin', data, to=pool_id)
 
 @socketio.on('leave')
 def on_leave(data):
@@ -176,7 +176,7 @@ def on_leave(data):
     db.session.commit()
     leave_room(pool_id)
     data = {'data': username + ' has left the carpool: ' + str(pool_id)}
-    emit( 'roomexit', data, room=pool_id)
+    emit( 'roomexit', data, to=pool_id)
 
 @socketio.on('connect')
 def test_connect():
