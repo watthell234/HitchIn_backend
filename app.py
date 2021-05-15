@@ -153,7 +153,6 @@ def on_join(data):
     username = data['username']
     pool_id = data['pool_id']
     join_room(pool_id)
-
     get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
     passng_checked = (db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None)
              .all())
@@ -165,20 +164,22 @@ def on_join(data):
     # })
     data = {'data': username + ' has joined the carpool: ' + str(pool_id)
                 + '. There are: ' + str(passenger_count) + ' in carpool'}
+    print(data)
     emit('roomjoin', data, to=pool_id)
 
 @socketio.on('leave')
 def on_leave(data):
     username = data['username']
     pool_id = data['pool_id']
+    data = {'data': username + ' has left the carpool: ' + str(pool_id)}
+    emit('endtrip', data, to=pool_id)
     leave_room(pool_id)
-    get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
+    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
     # end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all(
     # ).update().values({Trips.time_ended: datetime.utcnow})
     # db.session.commit()
+    print(data)
 
-    data = {'data': username + ' has left the carpool: ' + str(pool_id)}
-    emit( 'endtrip', data, to=pool_id)
 
 @socketio.on('connect')
 def test_connect():
