@@ -12,9 +12,9 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 app.config['SECRET_KEY'] = 'super-secret'
-# heroku = Heroku(app)
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -173,14 +173,13 @@ def on_join(data):
 # This is used to have people exit the carpool trip
 @socketio.on('leave')
 def on_leave(data):
-    username = data['username']
     pool_id = data['pool_id']
     get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
     end_trip = db.session.query(Trips)
                 .filter(Trips.car == get_car_id.id, Trips.time_ended == None)
                 .all().update().values({Trips.time_ended: datetime.utcnow})
     db.session.commit()
-    data = {'data': username + ' has left the carpool: ' + str(pool_id)}
+    data = {'data': 'All users have left carpool: ' + str(pool_id)}
     emit('endtrip', data, to=pool_id)
     leave_room(pool_id)
     print(data)
