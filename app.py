@@ -135,9 +135,7 @@ def pool_trips(car_id):
             'slugs': passenger_count
         })
     if request.method == 'PUT':
-        end_trip = db.session.query(Trips)
-        .filter(Trips.car == car_id, Trips.time_ended == None)
-        .all().update().values({Trips.time_ended: datetime.utcnow})
+        end_trip = db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None).all().update().values({Trips.time_ended: datetime.utcnow})
         db.session.commit()
         return jsonify({
             'status': '200'
