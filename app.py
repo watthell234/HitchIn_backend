@@ -19,6 +19,9 @@ db = SQLAlchemy(app)
 
 from models import *
 
+
+# HTTP Routes
+
 @app.route("/")
 def index():
     return "<h1>Welcome to HitchIn</h1>"
@@ -90,7 +93,8 @@ def create_car():
     car = Cars(qr_string, owner_id, car_make, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
-    created_car_id = db.session.query(Cars).order_by(Cars.created_timestamp.desc()).first()
+    created_car_id = db.session.query(Cars)
+    .order_by(Cars.created_timestamp.desc()).first()
     return jsonify({
         'status': '200',
         'message': 'Successfully registered car',
@@ -105,7 +109,8 @@ def checkin():
     car_qr = request.json.get('carQr', None)
     user_id = request.json.get('userId', None)
     try:
-        logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
+        logged_car = db.session.query(Cars)
+        .filter(Cars.qr_string == car_qr).first()
         checkin = Trips(None, 2, logged_car.id)
         db.session.add(checkin)
         db.session.commit()
@@ -123,8 +128,8 @@ def pool_trips(car_id):
 
     if request.method == 'GET':
 
-        passng_checked = (db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None)
-                 .all())
+        passng_checked = (db.session.query(Trips)
+        .filter(Trips.car == car_id, Trips.time_ended == None).all())
         passenger_count = len(passng_checked)
         return jsonify({
             'status': '200',
@@ -132,15 +137,16 @@ def pool_trips(car_id):
             'slugs': passenger_count
         })
     if request.method == 'PUT':
-        end_trip = db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None).all(
-        ).update().values({Trips.time_ended: datetime.utcnow})
+        end_trip = db.session.query(Trips)
+        .filter(Trips.car == car_id, Trips.time_ended == None)
+        .all().update().values({Trips.time_ended: datetime.utcnow})
         db.session.commit()
         return jsonify({
             'status': '200'
         })
 
 
-
+# Socket Routes
 
 @socketio.on('event')
 def test_message(message):
@@ -148,6 +154,7 @@ def test_message(message):
     json = {'data': message + " from server"}
     emit('events', json)
 
+# This is used to add people into carpool trip
 @socketio.on('join')
 def on_join(data):
     username = data['username']
@@ -163,6 +170,7 @@ def on_join(data):
     print(data)
     emit('roomjoin', data, to=pool_id)
 
+# This is used to have people exit the carpool trip
 @socketio.on('leave')
 def on_leave(data):
     username = data['username']
@@ -177,6 +185,7 @@ def on_leave(data):
     leave_room(pool_id)
     print(data)
 
+# Closes the carpool room created
 @socketio.on('close')
 def on_leave(data):
     pool_id = data['pool_id']
