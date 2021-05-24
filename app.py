@@ -12,9 +12,9 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
 app.config['SECRET_KEY'] = 'super-secret'
-heroku = Heroku(app)
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -108,8 +108,7 @@ def checkin():
     car_qr = request.json.get('carQr', None)
     user_id = request.json.get('userId', None)
     try:
-        logged_car = db.session.query(Cars)
-        .filter(Cars.qr_string == car_qr).first()
+        logged_car = db.session.query(Cars).filter(Cars.qr_string == car_qr).first()
         checkin = Trips(None, 2, logged_car.id)
         db.session.add(checkin)
         db.session.commit()
