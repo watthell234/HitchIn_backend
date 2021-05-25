@@ -142,7 +142,7 @@ def pool_trips(car_id):
         })
 
 
-# Socket Routes
+# Socket Route
 
 @socketio.on('event')
 def test_message(message):
