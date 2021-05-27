@@ -4,3 +4,12 @@
 2. `cd into-repo`
 3. `pipenv shell`
 4. `pipenv install` to install project dependencies.
+
+
+## Database Migrations
+
+Manage.py contains the migration scripts. In order to perform migrations after
+model gets changed you must run the following commands
+
+1. `python manage.py db migrate`
+2. `python manage.py db upgrade`
