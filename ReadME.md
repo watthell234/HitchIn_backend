@@ -13,5 +13,3 @@ model gets changed you must run the following commands
 
 1. `python manage.py db migrate`
 2. `python manage.py db upgrade`
-
-Can be done in Heroku also
