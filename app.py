@@ -6,22 +6,21 @@ import random
 import string
 import requests
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
-
 from flask_heroku import Heroku
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://localhost/hitchin'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+
 app.config['SECRET_KEY'] = 'super-secret'
-heroku = Heroku(app)
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
 
 
 # HTTP Routes
-
 @app.route("/")
 def index():
     return "<h1>Welcome to HitchIn</h1>"
@@ -33,12 +32,19 @@ def authenticate(username, password):
 
 def identity(payload):
     user_id = payload['identity']
-    return db.session.query(User).filter(User.id == user_id).scalar
+    return db.session.query(User).filter(User.id == user_id).scalar()
 
 jwt = JWT(app, authenticate, identity)
 
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
+
+    print("--------------------------------")
+
+    print(request)
+
+    print("---------------------------------")
+
     phone_number = request.json.get('phoneNumber', None)
     first_name = request.json.get('firstName', None)
     last_name = request.json.get('lastName', None)
@@ -46,23 +52,40 @@ def sign_up():
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
 
-    if not db.session.query(User).filter(User.phone_number == phone_number).scalar():
+    if not (entries_exist(email, phone_number)):
+
         new_user = User(phone_number, first_name, last_name, email, is_driver)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
-        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-                    json={"username": str(phone_number), "password": password})
+        # request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+        #             json={"username": str(phone_number), "password": password})
+
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
             'id': str(created_id.id),
-            'auth_token': request_token.json()['access_token']
+            # 'auth_token': request_token.json()['access_token']
         })
     else:
         abort(401)
 
+#check if entries already exists
+#currently checking: email, phone_number
+def entries_exist(email, phone_number):
+
+    exists = False
+
+    email_exists = db.session.query(User).filter(User.email == email).scalar()
+    phone_number_exists = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+
+    if email_exists:
+        exists = True
+    elif phone_number_exists:
+        exists = True
+
+    return exists
 
 @app.route("/login", methods=['POST'])
 def login():
