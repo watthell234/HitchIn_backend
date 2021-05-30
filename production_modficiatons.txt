@@ -1,0 +1,10 @@
+incomplete
+
+app.py:
+
+uncomment 'heroku = Heroku(app)'
+comment out 'app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin''
+
+Use
+# request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+#             json={"username": str(email), "password": password})
