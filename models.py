@@ -34,6 +34,7 @@ class User(db.Model, TimestampMixin):
         return check_password_hash(self.password_hash, password)
 
 
+
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)

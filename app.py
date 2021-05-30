@@ -1,32 +1,27 @@
-from flask import Flask, request, jsonify, abort, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_jwt import JWT, jwt_required, current_identity
 from datetime import datetime
 import random
 import string
 import requests
+
+from flask import Flask, request, jsonify, abort, request
+from flask_sqlalchemy import SQLAlchemy
+from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_heroku import Heroku
 
 app = Flask(__name__)
-socketio = SocketIO(app)
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-
 app.config['SECRET_KEY'] = 'super-secret'
-# heroku = Heroku(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
 
+# Authentication
+def authenticate(email, password):
 
-# HTTP Routes
-@app.route("/")
-def index():
-    return "<h1>Welcome to HitchIn</h1>"
-
-def authenticate(username, password):
-    user = db.session.query(User).filter(User.phone_number == username).first()
+    user = db.session.query(User).filter(User.email == email).first()
     if user and user.check_password(password):
         return user
 
@@ -35,6 +30,14 @@ def identity(payload):
     return db.session.query(User).filter(User.id == user_id).scalar()
 
 jwt = JWT(app, authenticate, identity)
+
+#Socket
+socketio = SocketIO(app)
+
+# HTTP Routes
+@app.route("/")
+def index():
+    return "<h1>Welcome to HitchIn</h1>"
 
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
@@ -59,14 +62,15 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
-        # request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-        #             json={"username": str(phone_number), "password": password})
-
+        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+                    json={"username": str(email), "password": password})
+        # request_token = requests.post('http://127.0.0.1:5000/auth',
+        #             json={"username": str(email), "password": password})
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
             'id': str(created_id.id),
-            # 'auth_token': request_token.json()['access_token']
+            'auth_token': request_token.json()['access_token']
         })
     else:
         abort(401)
