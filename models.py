@@ -33,7 +33,14 @@ class User(db.Model, TimestampMixin):
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+class PickUpLocations(db.Model, TimestampMixin):
 
+    __tablename__ = 'pickuplocations'
+    id = db.Column(db.Integer, primary_key=True)
+    location_name = db.Column(db.String(120), nullable=False)
+
+    def __init(self, location_name):
+        self.location_name = location_name
 
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
