@@ -91,6 +91,16 @@ def entries_exist(email, phone_number):
 
     return exists
 
+#return pickup spots and dropoff spots in a dictionary
+#{"pickup_list", "dropoff_list"}
+@app.route("/routes", methods=['GET'])
+def get_routes():
+    pickup_list = db.session.query(PickUpLocations).all()
+    dropoff_list = db.session.query(DropOffLocations).all()
+
+    lists = {"pickup_list": pickup_list, "dropoff_list": dropoff_list}
+    return lists
+
 @app.route("/login", methods=['POST'])
 def login():
     phone_number = request.json.get('phoneNumber', None)
