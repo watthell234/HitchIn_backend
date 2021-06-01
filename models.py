@@ -39,8 +39,11 @@ class PickUpLocations(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
 
-    def __init(self, location_name):
+    def __init__(self, location_name):
         self.location_name = location_name
+
+    def get_list(self):
+
 
 class DropOffLocations(db.Model, TimestampMixin):
 
@@ -48,8 +51,11 @@ class DropOffLocations(db.Model, TimestampMixin):
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
 
-    def __init(self, location_name):
+    def __init__(self, location_name):
         self.location_name = location_name
+
+    def get_list(self):
+
 
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
