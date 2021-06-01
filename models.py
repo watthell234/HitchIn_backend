@@ -35,7 +35,7 @@ class User(db.Model, TimestampMixin):
 
 class PickUpLocations(db.Model, TimestampMixin):
 
-    __tablename__ = 'pickupLocations'
+    __tablename__ = 'pickup_locations'
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
 
@@ -44,7 +44,7 @@ class PickUpLocations(db.Model, TimestampMixin):
 
 class DropOffLocations(db.Model, TimestampMixin):
 
-    __tablename__ = 'dropoffLocations'
+    __tablename__ = 'dropoff_locations'
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
 
