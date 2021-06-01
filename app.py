@@ -99,7 +99,10 @@ def get_routes():
     dropoff_list = db.session.query(DropOffLocations).all()
 
     lists = {"pickup_list": pickup_list, "dropoff_list": dropoff_list}
-    return lists
+    return jsonify({
+        'status': '200',
+        'lists': lists
+    })
 
 @app.route("/login", methods=['POST'])
 def login():
