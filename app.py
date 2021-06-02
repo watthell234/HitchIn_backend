@@ -101,7 +101,7 @@ def get_routes():
         pickup_list.append(pickup.location_name)
 
     return jsonify({
-        'status': '200'
+        'status': '200',
         'list': pickup_list
     })
 
