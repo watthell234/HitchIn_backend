@@ -100,7 +100,10 @@ def get_routes():
     for pickup in rows:
         pickup_list.append(pickup.location_name)
 
-    return jsonify(pickup_list)
+    return jsonify({
+        'status': '200'
+        'list': pickup_list
+    })
 
 @app.route("/login", methods=['POST'])
 def login():
