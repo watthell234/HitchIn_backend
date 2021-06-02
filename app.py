@@ -91,8 +91,7 @@ def entries_exist(email, phone_number):
 
     return exists
 
-#return pickup spots and dropoff spots in a dictionary
-#{"pickup_list", "dropoff_list"}
+#return pickup spots and dropoff spots in two lists in json
 @app.route("/routes", methods=['GET'])
 def get_routes():
     pickup_list = []
