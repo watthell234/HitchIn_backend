@@ -95,14 +95,12 @@ def entries_exist(email, phone_number):
 #{"pickup_list", "dropoff_list"}
 @app.route("/routes", methods=['GET'])
 def get_routes():
-    pickup_list = db.session.query(PickUpLocations).all()
-    dropoff_list = db.session.query(DropOffLocations).all()
+    pickup_list = []
+    rows = db.session.query(PickUpLocations).all()
+    for pickup in rows:
+        pickup_list.append(pickup.location_name)
 
-    lists = {"pickup_list": pickup_list, "dropoff_list": dropoff_list}
-    return jsonify({
-        'status': '200',
-        'lists': lists
-    })
+    return jsonify(pickup_list)
 
 @app.route("/login", methods=['POST'])
 def login():
