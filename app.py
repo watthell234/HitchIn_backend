@@ -19,9 +19,9 @@ db = SQLAlchemy(app)
 from models import *
 
 # Authentication
-def authenticate(email, password):
+def authenticate(phoneNumber, password):
 
-    user = db.session.query(User).filter(User.email == email).first()
+    user = db.session.query(User).filter(User.phone_number == phoneNumber).first()
     if user and user.check_password(password):
         return user
 
@@ -42,12 +42,6 @@ def index():
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
 
-    print("--------------------------------")
-
-    print(request)
-
-    print("---------------------------------")
-
     phone_number = request.json.get('phoneNumber', None)
     first_name = request.json.get('firstName', None)
     last_name = request.json.get('lastName', None)
@@ -63,9 +57,10 @@ def sign_up():
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-                    json={"username": str(email), "password": password})
+                    json={"username": str(phone_number), "password": password})
         # request_token = requests.post('http://127.0.0.1:5000/auth',
-        #             json={"username": str(email), "password": password})
+        #             json={"username": str(phone_number), "password": password})
+
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
