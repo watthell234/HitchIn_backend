@@ -58,8 +58,8 @@ def sign_up():
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
                     json={"username": str(phone_number), "password": password})
-        request_token = requests.post('http://127.0.0.1:5000/auth',
-                    json={"username": str(phone_number), "password": password})
+        # request_token = requests.post('http://127.0.0.1:5000/auth',
+        #             json={"username": str(phone_number), "password": password})
 
         return jsonify({
             'status': '200',
