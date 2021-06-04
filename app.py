@@ -12,8 +12,8 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -49,17 +49,17 @@ def sign_up():
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
 
-    if not (entries_exist(email, phone_number)):
+    if not (email_exists(email) or phone_number_exists(phone_number)):
 
         new_user = User(phone_number, first_name, last_name, email, is_driver)
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
-        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-                    json={"username": str(phone_number), "password": password})
-        # request_token = requests.post('http://127.0.0.1:5000/auth',
+        # request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
         #             json={"username": str(phone_number), "password": password})
+        request_token = requests.post('http://127.0.0.1:5000/auth',
+                    json={"username": str(phone_number), "password": password})
 
         return jsonify({
             'status': '200',
@@ -70,18 +70,22 @@ def sign_up():
     else:
         abort(401)
 
-#check if entries already exists
-#currently checking: email, phone_number
-def entries_exist(email, phone_number):
+def email_exists(email):
 
     exists = False
-
     email_exists = db.session.query(User).filter(User.email == email).scalar()
-    phone_number_exists = db.session.query(User).filter(User.phone_number == phone_number).scalar()
 
     if email_exists:
         exists = True
-    elif phone_number_exists:
+
+    return exists
+
+def phone_number_exists(phone_number):
+
+    exists = False
+    phone_number_exists = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+
+    if phone_number_exists:
         exists = True
 
     return exists
@@ -110,15 +114,22 @@ def get_routes():
 def login():
     phone_number = request.json.get('phoneNumber', None)
     password = request.json.get('password', None)
-    logged_user = authenticate(phone_number, password)
-    if logged_user:
-        return jsonify({
-            'status': '200',
-            'message': 'Successfully Logged in',
-            'id': logged_user.id
-        })
+    #Check if the phone number exists first.
+    if phone_number_exists(phone_number):
+        #Now authenticate.
+        logged_user = authenticate(phone_number, password)
+        if logged_user:
+            return jsonify({
+                'status': '200',
+                'message': 'Successfully Logged in',
+                'id': logged_user.id
+            })
+        #if authentication fails, abort with 403.
+        else:
+            abort(403)
+    #if phone_number doesn't exist, abort with 401.
     else:
-        abort(403)
+        abort(401)
 
 
 @app.route("/car", methods=['POST'])
