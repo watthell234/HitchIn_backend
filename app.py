@@ -12,8 +12,8 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -56,8 +56,8 @@ def sign_up():
         db.session.add(new_user)
         db.session.commit()
         created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
-        # request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-        #             json={"username": str(phone_number), "password": password})
+        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+                    json={"username": str(phone_number), "password": password})
         request_token = requests.post('http://127.0.0.1:5000/auth',
                     json={"username": str(phone_number), "password": password})
 
@@ -118,11 +118,19 @@ def login():
     if phone_number_exists(phone_number):
         #Now authenticate.
         logged_user = authenticate(phone_number, password)
+
+        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+            json={"username": str(phone_number), "password": password})
+
+        # request_token = requests.post('http://127.0.0.1:5000/auth',
+        #     json={"username": str(phone_number), "password": password})
+
         if logged_user:
             return jsonify({
                 'status': '200',
                 'message': 'Successfully Logged in',
-                'id': logged_user.id
+                'id': logged_user.id,
+                'auth_token': request_token.json()['access_token']
             })
         #if authentication fails, abort with 403.
         else:
