@@ -55,7 +55,7 @@ def sign_up():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        created_id = db.session.query(User).order_by(User.created_timestamp.desc()).first()
+        created_id = db.session.query(User).filter(User.phone_number == phone_number).scalar()
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
                     json={"username": str(phone_number), "password": password})
         # request_token = requests.post('http://127.0.0.1:5000/auth',
@@ -143,15 +143,15 @@ def login():
 @app.route("/car", methods=['POST'])
 @jwt_required()
 def create_car():
-    owner_id = request.json.get('userId', None)
+    owner_id = request.json.get('userID', None)
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
-    car_make = request.json.get('carMake', None)
-    car_year = request.json.get('carYear', None)
-    license_plate = request.json.get('licensePlate', None)
-    ezpass_tag = request.json.get('ezpassTag', None)
+    car_maker = request.json.get('car_maker', None)
+    car_year = request.json.get('car_year', None)
+    license_plate = request.json.get('car_plate', None)
+    ezpass_tag = request.json.get('ezpass_tag', None)
 
-    car = Cars(qr_string, owner_id, car_make, car_year, license_plate, ezpass_tag)
+    car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
     db.session.add(car)
     db.session.commit()
     created_car_id = db.session.query(Cars).order_by(Cars.created_timestamp.desc()).first()
