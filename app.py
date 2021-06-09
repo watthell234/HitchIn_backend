@@ -143,25 +143,43 @@ def login():
 @app.route("/car", methods=['POST'])
 @jwt_required()
 def create_car():
-    owner_id = request.json.get('userID', None)
+
     letters = string.ascii_letters
     qr_string = ''.join(random.choice(letters) for i in range(18))
+    owner_id = request.json.get('userID', None)
     car_maker = request.json.get('car_maker', None)
     car_year = request.json.get('car_year', None)
     license_plate = request.json.get('car_plate', None)
     ezpass_tag = request.json.get('ezpass_tag', None)
 
-    car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
-    db.session.add(car)
-    db.session.commit()
-    created_car_id = db.session.query(Cars).order_by(Cars.created_timestamp.desc()).first()
-    return jsonify({
-        'status': '200',
-        'message': 'Successfully registered car',
-        'id': str(created_car_id.id),
-        'qr_id': qr_string
-    })
+    #check if the license plate already exists.
+    #If not, proceed.
+    if not car_exists(license_plate):
+        car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
+        db.session.add(car)
+        db.session.commit()
+        created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
+        return jsonify({
+            'status': '200',
+            'message': 'Successfully registered car',
+            'id': str(created_car_id.id),
+            'qr_id': qr_string
+        })
+
+    #if it does, abort with 401.
+    else:
+        abort(401)
+
+def car_exists(car_plate):
+
+    exists = False
+    car_plate_exists = db.session.query(Cars).filter(Cars.license_plate == car_plate).scalar()
+
+    if car_plate_exists:
+        exists = True
+
+    return exists
 
 @app.route("/checkin", methods=['POST'])
 @jwt_required()
