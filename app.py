@@ -55,7 +55,7 @@ def sign_up():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        created_id = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+        created_user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
         request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
                     json={"username": str(phone_number), "password": password})
         # request_token = requests.post('http://127.0.0.1:5000/auth',
@@ -64,7 +64,7 @@ def sign_up():
         return jsonify({
             'status': '200',
             'message': 'Successfully Signed Up',
-            'id': str(created_id.id),
+            'id': str(created_user.id),
             'auth_token': request_token.json()['access_token']
         })
     else:
@@ -205,8 +205,7 @@ def pool_trips(car_id):
 
     if request.method == 'GET':
 
-        passng_checked = (db.session.query(Trips)
-        .filter(Trips.car == car_id, Trips.time_ended == None).all())
+        passng_checked = (db.session.query(Trips).filter(Trips.car == car_id, Trips.time_ended == None).all())
         passenger_count = len(passng_checked)
         return jsonify({
             'status': '200',
@@ -269,7 +268,7 @@ def on_leave(data):
 @socketio.on('connect')
 def test_connect():
     print("I AM CONNECTED")
-    json = {'data': 'I am Connected'}
+    json = {'sid': request.sid}
     emit('my_response', json)
 
 
