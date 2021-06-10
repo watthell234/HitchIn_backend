@@ -140,7 +140,7 @@ def login():
         abort(401)
 
 
-@app.route("/car", methods=['POST'])
+@app.route("/create_car", methods=['POST'])
 @jwt_required()
 def create_car():
 
