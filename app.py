@@ -12,8 +12,8 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+# heroku = Heroku(app)
 db = SQLAlchemy(app)
 
 from models import *
@@ -229,8 +229,8 @@ def test_message(message):
     emit('events', json)
 
 # This is used to add people into carpool trip
-@socketio.on('join')
-def on_join(data):
+# @socketio.on('join')
+# def on_join(data):
 
 
     # username = data['username']
