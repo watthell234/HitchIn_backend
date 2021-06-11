@@ -242,7 +242,8 @@ def handle_register_trip(data):
 
     trip_list = db.session.query(Trips).all()
 
-    emit('trip_updated', trip_list, broadcast=True)
+    print(trip_list)
+    # emit('trip_updated', trip_list, broadcast=True)
 
 # This is used to add people into carpool trip
 @socketio.on('join')
