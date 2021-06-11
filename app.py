@@ -230,7 +230,13 @@ def test_message(message):
 #DRIVER
 @socketio.on('register_trip')
 def handle_register_trip(data):
-    print(data)
+    userID = data['userID']
+    carID = data['carID']
+
+    print(datetime.utcnow)
+    print(userID)
+    print(carID)
+    # trip = Trips('', userID, carID)
 
 # This is used to add people into carpool trip
 @socketio.on('join')
