@@ -269,13 +269,17 @@ def on_leave(data):
 
 @socketio.on('connect')
 def handle_connect():
-    json = {'sid': request.sid,
-    'rooms': rooms(request.sid)}
-    emit('data', json)
+    json = {
+    'sid': request.sid
+    }
+    emit('room_ID', json)
 
 @socketio.on('disconnect')
-def test_disconnect():
-    print('Disconnect')
+def handle_disconnect():
+    json = {
+    'message': request.sid + ' is disconnected'
+    }
+    emit('disconnect_confirm', json)
 
 if __name__ == '__main__':
     app.debug = True
