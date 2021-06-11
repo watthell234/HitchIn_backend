@@ -276,9 +276,6 @@ def test_connect():
 @socketio.on('disconnect')
 def test_disconnect():
     print('Disconnect')
-@socketio.on('test_connect')
-def
-
 
 if __name__ == '__main__':
     app.debug = True
