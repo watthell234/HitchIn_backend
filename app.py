@@ -267,7 +267,7 @@ def on_leave(data):
     close_room(pool_id)
     print(data)
 
-@socketio.on('driver_connect')
+@socketio.on('connect')
 def handle_connect():
     json = {
     'sid': request.sid
