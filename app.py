@@ -268,9 +268,10 @@ def on_leave(data):
     print(data)
 
 @socketio.on('connect')
-def connect():
-    json = {'sid': request.sid}
-    emit('session_id', json)
+def handle_connect():
+    json = {'sid': request.sid,
+    'rooms': rooms(request.sid)}
+    emit('data', json)
 
 @socketio.on('disconnect')
 def test_disconnect():
