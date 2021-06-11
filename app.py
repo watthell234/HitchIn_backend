@@ -232,7 +232,7 @@ def test_message(message):
 @socketio.on('join')
 def on_join(data):
 
-    print(data)
+    send("received: " + data)
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
