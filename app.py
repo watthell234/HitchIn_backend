@@ -233,10 +233,10 @@ def handle_register_trip(data):
     userID = data['userID']
     carID = data['carID']
 
-    print(datetime.now)
+    print(datetime.now())
     print(userID)
     print(carID)
-    trip = Trips(datetime.now, userID, carID)
+    trip = Trips(datetime.now(), userID, carID)
     db.session.add(trip)
     db.session.commit()
 
