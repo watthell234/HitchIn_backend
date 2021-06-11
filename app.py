@@ -268,11 +268,18 @@ def on_leave(data):
     print(data)
 
 @socketio.on('connect')
-# def handle_connect():
-#     json = {
-#     'sid': request.sid
-#     }
-#     emit('room_ID', json)
+def handle_connect():
+    json = {
+    'sid': request.sid
+    }
+    emit('room_ID_connect', json)
+
+@socketio.on('get_room_id')
+def handle_get_room_id():
+    json = {
+    'sid': request.sid
+    }
+    emit('room_ID', json)
 
 @socketio.on('disconnect')
 def handle_disconnect():
