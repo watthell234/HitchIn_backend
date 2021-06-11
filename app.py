@@ -267,7 +267,7 @@ def on_leave(data):
     close_room(pool_id)
     print(data)
 
-@socketio.on('connect')
+@socketio.on('driver_connect')
 def handle_connect():
     json = {
     'sid': request.sid
@@ -276,10 +276,7 @@ def handle_connect():
 
 @socketio.on('disconnect')
 def handle_disconnect():
-    json = {
-    'message': request.sid + ' is disconnected'
-    }
-    emit('disconnect_confirm', json)
+    print('Client disconnected')
 
 if __name__ == '__main__':
     app.debug = True
