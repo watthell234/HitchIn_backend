@@ -229,10 +229,10 @@ def test_message(message):
     emit('events', json)
 
 # This is used to add people into carpool trip
-# @socketio.on('join')
-# def on_join(data):
+@socketio.on('join')
+def on_join(data):
 
-
+    print(data)
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
