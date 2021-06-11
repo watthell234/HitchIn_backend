@@ -231,18 +231,20 @@ def test_message(message):
 # This is used to add people into carpool trip
 @socketio.on('join')
 def on_join(data):
-    username = data['username']
-    pool_id = data['pool_id']
-    join_room(pool_id)
-    get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    passng_checked = (db.session.query(Trips)
-                    .filter(Trips.car == get_car_id.id, Trips.time_ended == None)
-                    .all())
-    passenger_count = len(passng_checked)
-    data = {'data': username + ' has joined the carpool: ' + str(pool_id)
-                + '. There are: ' + str(passenger_count) + ' in carpool'}
-    print(data)
-    emit('roomjoin', data, to=pool_id)
+
+
+    # username = data['username']
+    # pool_id = data['pool_id']
+    # join_room(pool_id)
+    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
+    # passng_checked = (db.session.query(Trips)
+    #                 .filter(Trips.car == get_car_id.id, Trips.time_ended == None)
+    #                 .all())
+    # passenger_count = len(passng_checked)
+    # data = {'data': username + ' has joined the carpool: ' + str(pool_id)
+    #             + '. There are: ' + str(passenger_count) + ' in carpool'}
+    # print(data)
+    # emit('roomjoin', data, to=pool_id)
 
 # This is used to have people exit the carpool trip
 @socketio.on('leave')
@@ -267,7 +269,6 @@ def on_leave(data):
 
 @socketio.on('connect')
 def test_connect():
-    print("I AM CONNECTED")
     json = {'sid': request.sid}
     emit('my_response', json)
 
