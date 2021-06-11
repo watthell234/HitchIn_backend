@@ -236,7 +236,9 @@ def handle_register_trip(data):
     print(datetime.utcnow)
     print(userID)
     print(carID)
-    # trip = Trips('', userID, carID)
+    trip = Trips(datetime.utcnow, userID, carID)
+    db.session.add(trip)
+    db.session.commit()
 
 # This is used to add people into carpool trip
 @socketio.on('join')
