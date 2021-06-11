@@ -267,15 +267,17 @@ def on_leave(data):
     close_room(pool_id)
     print(data)
 
-@socketio.on('connect')
+@socketio.on('test_connect')
 def test_connect():
     json = {'sid': request.sid}
-    emit('my_response', json)
+    emit('my_response', json, broadcast=True)
 
 
 @socketio.on('disconnect')
 def test_disconnect():
     print('Disconnect')
+@socketio.on('test_connect')
+def
 
 
 if __name__ == '__main__':
