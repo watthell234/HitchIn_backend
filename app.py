@@ -221,12 +221,16 @@ def pool_trips(car_id):
 
 
 # Socket Route
-
 @socketio.on('event')
 def test_message(message):
     print("Button was pressed")
     json = {'data': message + " from server"}
     emit('events', json)
+
+#DRIVER
+@socketio.on('register_trip')
+def handle_register_trip(data):
+    print(data)
 
 # This is used to add people into carpool trip
 @socketio.on('join')
