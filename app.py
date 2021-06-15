@@ -248,11 +248,7 @@ def handle_register_trip(data):
 
     print(trip_list)
 
-    trip_list_json = jsonify({
-        'trip_list': trip_list
-    })
-
-    emit('trip_updated', trip_list_json, broadcast=True)
+    emit('trip_updated', {'trip_list': trip_list}, broadcast=True)
 
 # @socketio.on('delete_trip')
 # def handle_delete_trip(data):
