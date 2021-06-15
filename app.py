@@ -232,6 +232,7 @@ def test_message(message):
 def handle_register_trip(data):
     userID = data['userID']
     carID = data['carID']
+    trip_list = []
 
     print(datetime.now())
     print(userID)
@@ -240,10 +241,17 @@ def handle_register_trip(data):
     db.session.add(trip)
     db.session.commit()
 
-    trip_list = db.session.query(Trips).all()
+    trip_rows = db.session.query(Trips).all()
 
-    print(trip_list)
+    for trip in trip_rows:
+        trip_list.append(trip.car_id)
+
+    print(trip)
     # emit('trip_updated', trip_list, broadcast=True)
+
+# @socketio.on('delete_trip')
+# def handle_delete_trip(data):
+#
 
 # This is used to add people into carpool trip
 @socketio.on('join')
