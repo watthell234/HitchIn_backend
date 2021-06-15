@@ -246,7 +246,7 @@ def handle_register_trip(data):
     for trip in trip_rows:
         trip_list.append(trip.car)
 
-    print(trip)
+    print(trip_list)
     # emit('trip_updated', trip_list, broadcast=True)
 
 # @socketio.on('delete_trip')
