@@ -244,7 +244,7 @@ def handle_register_trip(data):
     trip_rows = db.session.query(Trips).all()
 
     for trip in trip_rows:
-        trip_list.append(trip.car_id)
+        trip_list.append(trip.car)
 
     print(trip)
     # emit('trip_updated', trip_list, broadcast=True)
