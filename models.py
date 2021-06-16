@@ -70,6 +70,16 @@ class Trips(db.Model, TimestampMixin):
         self.pickup = pickup
         self.destination = destination
 
+class Passengers(db.Model, TimestampMixin):
+    __table__name = 'passengers'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable = False)
+
+    def __init__(self, passenger_id, trip_id):
+        self.user_id = passenger_id
+        self.trip_id = trip_id
+
 class Cars(db.Model, TimestampMixin):
     __tablename__ = 'cars'
     id = db.Column(db.Integer, primary_key=True)
