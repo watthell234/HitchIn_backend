@@ -250,7 +250,7 @@ def handle_register_trip(data):
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append(car)
 
-    print(car)
+    print(car_list)
 
     # emit('car_updated', {'car_list': car_list}, broadcast=True)
 
