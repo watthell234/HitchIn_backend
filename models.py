@@ -66,7 +66,7 @@ class Trips(db.Model, TimestampMixin):
         self.driver_id = driver_id
         self.car_id = car_id
         self.time_started = datetime.now()
-        self.time_ended = time_ended
+        self.time_ended = None
         self.pickup = pickup
         self.destination = destination
 
