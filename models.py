@@ -55,14 +55,20 @@ class DropOffLocations(db.Model, TimestampMixin):
 class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)
+    driver_id = db.Column('driver_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
+    car_id = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
+    time_started = db.Column(db.DateTime(timezone=True))
     time_ended = db.Column(db.DateTime(timezone=True))
-    rider = db.Column('user_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
-    car = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
+    pickup = db.Column(db.String(120), nullable=False)
+    destination = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, time_ended, rider, car):
+    def __init__(self, driver_id, car_id, time_started, time_ended, pickup, destination):
+        self.driver_id = driver_id
+        self.car_id = car_id
+        self.time_started = datetime.now()
         self.time_ended = time_ended
-        self.rider = rider
-        self.car = car
+        self.pickup = pickup
+        self.destination = destination
 
 class Cars(db.Model, TimestampMixin):
     __tablename__ = 'cars'
