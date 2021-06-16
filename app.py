@@ -248,7 +248,7 @@ def handle_register_trip(data):
 
     print(trip_list)
 
-    emit('trip_updated', {'trip_list': trip_list}, broadcast=True)
+    emit('trip_updated', {'trip_list': trip_list})
 
 # @socketio.on('delete_trip')
 # def handle_delete_trip(data):
