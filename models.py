@@ -62,7 +62,7 @@ class Trips(db.Model, TimestampMixin):
     pickup = db.Column(db.String(120), nullable=False)
     destination = db.Column(db.String(120), nullable=False)
 
-    def __init__(self, driver_id, car_id, time_started, time_ended, pickup, destination):
+    def __init__(self, driver_id, car_id, pickup, destination):
         self.driver_id = driver_id
         self.car_id = car_id
         self.time_started = datetime.now()
