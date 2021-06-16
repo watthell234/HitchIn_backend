@@ -243,14 +243,16 @@ def handle_register_trip(data):
     db.session.add(trip)
     db.session.commit()
 
-    trip_rows = db.session.query(Trips).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
 
+    #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
-        car_list.append(trip.car_id)
+        car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
+        car_list.append(car)
 
-    print(car_list)
+    print(car)
 
-    emit('car_updated', {'car_list': car_list}, broadcast=True)
+    # emit('car_updated', {'car_list': car_list}, broadcast=True)
 
 # @socketio.on('delete_trip')
 # def handle_delete_trip(data):
