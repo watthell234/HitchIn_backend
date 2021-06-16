@@ -232,12 +232,14 @@ def test_message(message):
 def handle_register_trip(data):
     userID = data['userID']
     carID = data['carID']
+    pickup = data['pickup']
+    destination = data['dropoff']
     trip_list = []
 
     print(datetime.now())
     print(userID)
     print(carID)
-    trip = Trips(datetime.now(), userID, carID)
+    trip = Trips(datetime.now(), userID, carID, pickup, destination)
     db.session.add(trip)
     db.session.commit()
 
