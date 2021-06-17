@@ -112,6 +112,8 @@ def get_routes():
 
 @app.route("/car_list", methods=['GET', 'POST'])
 def get_car_list():
+    print(request)
+
     owner_id = request.json.get('userID', None)
 
     car_list = []
