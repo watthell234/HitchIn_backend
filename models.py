@@ -56,7 +56,7 @@ class Trips(db.Model, TimestampMixin):
     __tablename__ = 'trips'
     id = db.Column(db.Integer, primary_key=True)
     driver_id = db.Column('driver_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
-    car_id = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), nullable = False)
+    car_id = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), unique = True, nullable = False)
     time_started = db.Column(db.DateTime(timezone=True))
     time_ended = db.Column(db.DateTime(timezone=True))
     pickup = db.Column(db.String(120), nullable=False)
