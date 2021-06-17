@@ -266,7 +266,7 @@ def handle_register_trip(data):
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
-        car_list.append(car)
+        car_list.append(car.id)
 
     pickup = pickup.replace(" ", "_")
     print(car_list)
