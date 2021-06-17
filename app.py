@@ -110,6 +110,23 @@ def get_routes():
         'dropoff_list': dropoff_list
     })
 
+@app.route("/car_list", methods=['GET'])
+def get_car_list():
+    owner_id = request.json.get('userID', None)
+
+    car_list = []
+    car_rows = db.session.query(Cars).filter(Cars.owner_id = owner_id).all()
+
+    #only returns license plate for now
+    for car in car_rows:
+        car_list.append(car.license_plate)
+
+    return jsonify({
+        'status': '200',
+        'car_list': car_list
+    })
+
+
 @app.route("/login", methods=['POST'])
 def login():
     phone_number = request.json.get('phoneNumber', None)
