@@ -112,7 +112,6 @@ def get_routes():
 
 @app.route("/car_list", methods=['POST'])
 def get_car_list():
-    print(request.json)
 
     owner_id = request.json.get('userID', None)
 
@@ -121,7 +120,7 @@ def get_car_list():
 
     #only returns license plate for now
     for car in car_rows:
-        car_list.append(car.license_plate)
+        car_list.append({"car_id": car.id, "license_plate": car.license_plate})
 
     return jsonify({
         'status': '200',
