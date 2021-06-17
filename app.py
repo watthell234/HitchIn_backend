@@ -268,9 +268,12 @@ def handle_register_trip(data):
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append(car)
 
+    pickup = pickup.replace(" ", "_")
     print(car_list)
+    print(pickup)
 
-    # emit('car_updated', {'car_list': car_list}, broadcast=True)
+
+    # emit('updated_car_list', {'car_list': car_list}, broadcast=True)
 
 # @socketio.on('delete_trip')
 # def handle_delete_trip(data):
