@@ -110,7 +110,7 @@ def get_routes():
         'dropoff_list': dropoff_list
     })
 
-@app.route("/car_list", methods=['GET'])
+@app.route("/car_list", methods=['POST'])
 def get_car_list():
     print(request.json)
 
