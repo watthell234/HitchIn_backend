@@ -115,7 +115,7 @@ def get_car_list():
     owner_id = request.json.get('userID', None)
 
     car_list = []
-    car_rows = db.session.query(Cars).filter(Cars.owner_id = owner_id).all()
+    car_rows = db.session.query(Cars).filter(Cars.owner_id == owner_id).all()
 
     #only returns license plate for now
     for car in car_rows:
