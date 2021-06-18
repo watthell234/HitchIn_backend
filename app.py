@@ -296,6 +296,8 @@ def handle_delete_trip(data):
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append(car.id)
 
+    print(car_list)
+    print(pickup.replace(" ", "_"))
     emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list})
 
 @socketio.on('init_ride')
