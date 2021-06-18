@@ -62,8 +62,9 @@ class Trips(db.Model, TimestampMixin):
     pickup = db.Column(db.String(120), nullable=False)
     destination = db.Column(db.String(120), nullable=False)
     qr_string = db.Column(db.String(18), nullable=False)
+    session_id = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, driver_id, car_id, pickup, destination, qr_string):
+    def __init__(self, driver_id, car_id, pickup, destination, qr_string, session_id):
         self.driver_id = driver_id
         self.car_id = car_id
         self.time_started = datetime.now()
@@ -71,6 +72,7 @@ class Trips(db.Model, TimestampMixin):
         self.pickup = pickup
         self.destination = destination
         self.qr_string = qr_string
+        self.session_id = session_id
 
 class Passengers(db.Model, TimestampMixin):
     __table__name = 'passengers'
