@@ -278,12 +278,25 @@ def handle_register_trip(data):
 @socketio.on('delete_trip')
 def handle_delete_trip(data):
     tripID = data['tripID']
+    pickup = data['pickup']
+    car_list = []
+
+    #dont think I need this, but I'll still get it anyway.
+    dropoff = data['dropoff']
 
     print(tripID)
     trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
-
     db.session.delete(trip)
     db.session.commit()
+
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
+
+    #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
+    for trip in trip_rows:
+        car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
+        car_list.append(car.id)
+
+    emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list})
 
 @socketio.on('init_ride')
 def handle_init_ride(data):
