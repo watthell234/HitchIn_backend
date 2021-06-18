@@ -259,22 +259,22 @@ def handle_register_trip(data):
     print(carID)
     car = db.session.query(Cars).filter(Cars.id == carID).scalar()
     print(car.qr_string)
-    # trip = Trips(userID, carID, pickup, destination)
-    # db.session.add(trip)
-    # db.session.commit()
-    #
-    # trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
-    #
-    # #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
-    # for trip in trip_rows:
-    #     car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
-    #     car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
-    #
-    # print(car_list)
-    # print(pickup)
-    #
-    # emit('trip_id', {'trip_id': trip.id})
-    # emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
+    trip = Trips(userID, carID, pickup, destination)
+    db.session.add(trip)
+    db.session.commit()
+
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
+
+    #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
+    for trip in trip_rows:
+        car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
+        car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
+
+    print(car_list)
+    print(pickup)
+
+    emit('trip_id', {'trip_id': trip.id})
+    emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 @socketio.on('delete_trip')
 def handle_delete_trip(data):
