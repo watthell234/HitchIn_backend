@@ -279,7 +279,7 @@ def handle_register_trip(data):
 def handle_delete_trip(data):
     tripID = data['tripID']
 
-    console.log(tripID)
+    print(tripID)
     trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
 
     db.session.delete(trip)
