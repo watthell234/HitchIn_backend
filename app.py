@@ -275,8 +275,15 @@ def handle_register_trip(data):
     emit('trip_id', {'trip_id': trip.id})
     emit('updated_car_list' + pickup, {'car_list': car_list})
 
-# @socketio.on('delete_trip')
-# def handle_delete_trip(data):
+@socketio.on('delete_trip')
+def handle_delete_trip(data):
+    tripID = data['tripID']
+
+    console.log(tripID)
+    trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
+
+    db.session.delete(trip)
+    db.session.commit()
 
 @socketio.on('init_ride')
 def handle_init_ride(data):
