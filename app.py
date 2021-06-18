@@ -272,7 +272,7 @@ def handle_register_trip(data):
     print(car_list)
     print(pickup)
 
-
+    emit('trip_id', {'trip_id': trip.id})
     emit('updated_car_list' + pickup, {'car_list': car_list})
 
 # @socketio.on('delete_trip')
