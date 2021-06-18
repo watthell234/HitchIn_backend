@@ -283,6 +283,9 @@ def handle_init_ride(data):
     pickup = data['pickup']
     destination = data['dropoff']
 
+    print(pickup)
+    print(destination)
+
     car_list = []
     trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
 
@@ -290,6 +293,7 @@ def handle_init_ride(data):
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append(car.id)
 
+    print(car_list)
     pickup = pickup.replace(" ", "_")
 
     emit('car_list' + pickup, {'car_list': car_list})
