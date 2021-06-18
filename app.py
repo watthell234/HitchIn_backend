@@ -321,10 +321,11 @@ def handle_init_ride(data):
     emit('car_list' + pickup.replace(" ", "_"), {'car_list': car_list})
 
 # This is used to add people into carpool trip
-@socketio.on('join')
-def on_join(data):
+@socketio.on('join_trip')
+def handle_join_trip(data):
 
-    send("received: " + data)
+    qr_string = data['qr_string']
+    print(qr_string)
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
