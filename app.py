@@ -252,6 +252,7 @@ def handle_register_trip(data):
     carID = data['carID']
     pickup = data['pickup']
     destination = data['dropoff']
+    session_id = data['session_id']
     car_list = []
 
     print(datetime.now())
@@ -259,7 +260,7 @@ def handle_register_trip(data):
     print(carID)
     car = db.session.query(Cars).filter(Cars.id == carID).scalar()
     print(car.qr_string)
-    trip = Trips(userID, carID, pickup, destination, car.qr_string)
+    trip = Trips(userID, carID, pickup, destination, car.qr_string, session_id)
     db.session.add(trip)
     db.session.commit()
 
