@@ -277,7 +277,22 @@ def handle_register_trip(data):
 
 # @socketio.on('delete_trip')
 # def handle_delete_trip(data):
-#
+
+@socketio.on('init_ride')
+def handle_init_ride(data):
+    pickup = data['pickup']
+    destination = data['dropoff']
+
+    car_list = []
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
+
+    for trip in trip_rows:
+        car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
+        car_list.append(car.id)
+
+    pickup = pickup.replace(" ", "_")
+
+    emit('car_list' + pickup, {'car_list': car_list})
 
 # This is used to add people into carpool trip
 @socketio.on('join')
