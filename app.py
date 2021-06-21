@@ -339,8 +339,10 @@ def handle_join_trip(data):
         passenger = Passengers(userID, trip.id)
         db.session.add(passenger)
         db.session.commit()
+
+        emit('join_trip_response', {'success': 1})
     else:
-        emit('join_trip_response', {'message': 'Car is not drive-ready at your location!'})
+        emit('join_trip_response', {'success': 0})
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
