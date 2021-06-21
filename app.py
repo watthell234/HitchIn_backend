@@ -326,13 +326,18 @@ def handle_init_ride(data):
 def handle_join_trip(data):
 
     qr_string = data['qr_string']
+    userID = data['userID']
+    print(userID)
 
     #ASSUME THERE IS ONLY ONE CAR WITH THE QR_STRING AT A TIME IN TRIPS TABLE FOR NOW
     trip = db.session.query(Trips).filter(Trips.qr_string == qr_string).scalar()
 
-    print(trip.id)
-    print(trip.qr_string)
-    print(trip.session_id)
+    if trip:
+        print(trip.id)
+        print(trip.qr_string)
+        print(trip.session_id)
+    else:
+        emit('join_trip_response', {'message': 'Car is not drive-ready at your location!'})
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
