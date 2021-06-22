@@ -339,6 +339,9 @@ def handle_join_trip(data):
         passenger = Passengers(userID, trip.id)
         db.session.add(passenger)
         db.session.commit()
+        join_room(trip.session_id)
+
+        print(rooms())
 
         emit('join_trip_response_' + userID, {'success': 1, 'room_id': trip.session_id})
     else:
