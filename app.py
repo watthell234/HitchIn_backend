@@ -274,7 +274,7 @@ def handle_register_trip(data):
     print(car_list)
     print(pickup)
 
-    emit('trip_id', {'trip_id': trip.id})
+    emit('trip_id_' + carID, {'trip_id': trip.id})
     emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 @socketio.on('delete_trip')
@@ -300,7 +300,7 @@ def handle_delete_trip(data):
 
     print(car_list)
     print(pickup.replace(" ", "_"))
-    emit('updated_car_list' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
+    emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 @socketio.on('init_ride')
 def handle_init_ride(data):
@@ -319,7 +319,7 @@ def handle_init_ride(data):
 
     print(car_list)
 
-    emit('car_list' + pickup.replace(" ", "_"), {'car_list': car_list})
+    emit('car_list_' + pickup.replace(" ", "_"), {'car_list': car_list})
 
 # This is used to add people into carpool trip
 @socketio.on('join_trip')
@@ -340,9 +340,9 @@ def handle_join_trip(data):
         db.session.add(passenger)
         db.session.commit()
 
-        emit('join_trip_response' + userID, {'success': 1})
+        emit('join_trip_response_' + userID, {'success': 1})
     else:
-        emit('join_trip_response' + userID, {'success': 0})
+        emit('join_trip_response_' + userID, {'success': 0})
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
