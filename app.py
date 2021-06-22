@@ -340,9 +340,9 @@ def handle_join_trip(data):
         db.session.add(passenger)
         db.session.commit()
 
-        emit('join_trip_response', {'success': 1})
+        emit('join_trip_response' + userID, {'success': 1})
     else:
-        emit('join_trip_response', {'success': 0})
+        emit('join_trip_response' + userID, {'success': 0})
     # username = data['username']
     # pool_id = data['pool_id']
     # join_room(pool_id)
