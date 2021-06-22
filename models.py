@@ -78,7 +78,7 @@ class Passengers(db.Model, TimestampMixin):
     __table__name = 'passengers'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
-    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable = False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable = False, unique = True)
 
     def __init__(self, passenger_id, trip_id):
         self.user_id = passenger_id
