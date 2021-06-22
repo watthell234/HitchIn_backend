@@ -340,7 +340,7 @@ def handle_join_trip(data):
         db.session.add(passenger)
         db.session.commit()
 
-        emit('join_trip_response_' + userID, {'success': 1})
+        emit('join_trip_response_' + userID, {'success': 1, 'room_id': trip.session_id})
     else:
         emit('join_trip_response_' + userID, {'success': 0})
     # username = data['username']
