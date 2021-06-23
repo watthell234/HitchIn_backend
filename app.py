@@ -342,7 +342,7 @@ def handle_join_trip(data):
         db.session.commit()
         join_room(trip.session_id)
 
-        emit('passenger_update_' + str(trip.car_id), {'success':1}, to=trip.session_id)
+        emit('passenger_update', {'action': 'add'}, to=trip.session_id)
         emit('join_trip_response_' + userID, {'success': 1})
     else:
         emit('join_trip_response_' + userID, {'success': 0})
@@ -370,6 +370,8 @@ def on_leave(data):
         db.session.delete(passenger)
 
     db.session.commit()
+
+    # emit('passenger_update_' + str(trip.car_id), {'action': 'subtract'})
 
     # db.session.delete(passenger)
     # db.session.commit()
