@@ -381,11 +381,12 @@ def on_leave(data):
     for passenger in passengers:
         db.session.delete(passenger)
 
+    db.session.commit()
+
     emit('passenger_update', {'action': 'subtract'}, to=trip.session_id)
 
     leave_room(trip.session_id)
     print(rooms())
-    db.session.commit()
 
     # emit('passenger_update_' + str(trip.car_id), {'action': 'subtract'})
 
