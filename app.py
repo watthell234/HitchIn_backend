@@ -365,9 +365,12 @@ def on_leave(data):
     userID = data['userID']
 
     passengers = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
+    trip = db.session.query(Passengers).filter(Trips.id == passengers[0].trip_id).scalar()
 
     for passenger in passengers:
         db.session.delete(passenger)
+
+    emit('passenger_update', {'action': 'subtract'}, to=trip.session_id)
 
     db.session.commit()
 
