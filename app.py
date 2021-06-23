@@ -297,9 +297,10 @@ def handle_delete_trip(data):
     # db.session.commit()
 
     db.session.delete(trip)
-    db.session.commit()
 
     emit('trip_deleted', to=request.sid)
+
+    db.session.commit()
 
     trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
 
