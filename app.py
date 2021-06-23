@@ -364,11 +364,12 @@ def handle_join_trip(data):
 def on_leave(data):
     userID = data['userID']
 
-    passenger1 = db.session.query(Passengers).filter(Passengers.user_id == userID).scalar()
-    print(passenger1)
+    passengers = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
 
-    passenger2 = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
-    print(passenger2)
+    for passenger in passengers:
+        db.session.delete(passenger)
+
+    db.session.commit()
 
     # db.session.delete(passenger)
     # db.session.commit()
