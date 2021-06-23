@@ -289,13 +289,13 @@ def handle_delete_trip(data):
     print(tripID)
     #DOESN'T ALWAYS WORK? PROBABLY BECAUSE the client disconnects first before this line gets executed. Not sure.
     trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
-    passengers = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+    # passengers = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+    #
+    # for passenger in passengers:
+    #     db.session.delete(passenger)
+    #
+    # db.session.commit()
 
-    for passenger in passengers:
-        db.session.delete(passenger)
-
-    db.session.commit()
-    
     db.session.delete(trip)
     db.session.commit()
 
