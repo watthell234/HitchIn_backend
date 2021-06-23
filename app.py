@@ -287,7 +287,7 @@ def handle_delete_trip(data):
     dropoff = data['dropoff']
 
     print(tripID)
-    trip = db.session.query(Trips).filter(Trips.session_id == request.session_id).scalar()
+    trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
     db.session.delete(trip)
     db.session.commit()
 
