@@ -364,9 +364,14 @@ def handle_join_trip(data):
 def on_leave(data):
     userID = data['userID']
 
-    passenger = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
-    db.session.delete(passenger)
-    db.session.commit()
+    passenger1 = db.session.query(Passengers).filter(Passengers.user_id == userID).scalar()
+    print(passenger1)
+
+    passenger2 = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
+    print(passenger2)
+
+    # db.session.delete(passenger)
+    # db.session.commit()
 
     # pool_id = data['pool_id']
     # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
