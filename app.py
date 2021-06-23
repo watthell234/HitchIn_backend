@@ -287,6 +287,7 @@ def handle_delete_trip(data):
     dropoff = data['dropoff']
 
     print(tripID)
+    #DOESN'T ALWAYS WORK? PROBABLY BECAUSE the client disconnects first before this line gets executed. Not sure.
     trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
     db.session.delete(trip)
     db.session.commit()
@@ -361,14 +362,20 @@ def handle_join_trip(data):
 # This is used to have people exit the carpool trip
 @socketio.on('leave')
 def on_leave(data):
-    pool_id = data['pool_id']
-    get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all().update().values({Trips.time_ended: datetime.utcnow})
+    userID = data['userID']
+
+    passenger = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
+    db.session.delete(passenger)
     db.session.commit()
-    data = {'data': 'All users have left carpool: ' + str(pool_id)}
-    emit('endtrip', data, to=pool_id)
-    leave_room(pool_id)
-    print(data)
+
+    # pool_id = data['pool_id']
+    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
+    # end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all().update().values({Trips.time_ended: datetime.utcnow})
+    # db.session.commit()
+    # data = {'data': 'All users have left carpool: ' + str(pool_id)}
+    # emit('endtrip', data, to=pool_id)
+    # leave_room(pool_id)
+    # print(data)
 
 # Closes the carpool room created
 @socketio.on('close')
