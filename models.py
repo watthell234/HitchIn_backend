@@ -3,6 +3,7 @@ from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import phonenumbers
 from sqlalchemy_utils import PhoneNumberType
+from sqlalchemy.orm import relationship
 
 class TimestampMixin(object):
     created_timestamp = db.Column(
@@ -63,6 +64,7 @@ class Trips(db.Model, TimestampMixin):
     destination = db.Column(db.String(120), nullable=False)
     qr_string = db.Column(db.String(18), nullable=False)
     session_id = db.Column(db.String(20), nullable=False)
+    passenger = relationship("Passengers", cascade="all, delete")
 
     def __init__(self, driver_id, car_id, pickup, destination, qr_string, session_id):
         self.driver_id = driver_id
