@@ -99,10 +99,10 @@ def get_routes():
     dropoff_rows = db.session.query(DropOffLocations).all()
 
     for pickup in pickup_rows:
-        pickup_list.append(pickup.location_name)
+        pickup_list.append({'location_name': pickup.location_name, 'latitude': pickup.latitude, 'longitude': pickup.longitude})
 
     for dropoff in dropoff_rows:
-        dropoff_list.append(dropoff.location_name)
+        dropoff_list.append({'location_name': dropoff.location_name, 'latitude': dropoff.latitude, 'longitude': dropoff.longitude})
 
     return jsonify({
         'status': '200',
