@@ -39,6 +39,8 @@ class PickUpLocations(db.Model, TimestampMixin):
     __tablename__ = 'pickup_locations'
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
 
     def __init__(self, location_name):
         self.location_name = location_name
@@ -48,6 +50,8 @@ class DropOffLocations(db.Model, TimestampMixin):
     __tablename__ = 'dropoff_locations'
     id = db.Column(db.Integer, primary_key=True)
     location_name = db.Column(db.String(120), nullable=False)
+    latitude = db.Column(db.Float)
+    longitude = db.Column(db.Float)
 
     def __init__(self, location_name):
         self.location_name = location_name
