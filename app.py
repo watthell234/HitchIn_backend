@@ -327,7 +327,7 @@ def handle_start_trip(data):
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
-        print(trip.active == 't')
+        print(trip.active)
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
 
