@@ -367,7 +367,7 @@ def handle_join_trip(data):
     # emit('roomjoin', data, to=pool_id)
 
 # This is used to have people exit the carpool trip
-@socketio.on('leave')
+@socketio.on('leave_trip')
 def on_leave(data):
     userID = data['userID']
 
