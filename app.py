@@ -245,7 +245,7 @@ def test_message(message):
     json = {'data': message + " from server"}
     emit('events', json)
 
-#DRIVER
+#DRIVER RELATED
 @socketio.on('register_trip')
 def handle_register_trip(data):
     userID = data['userID']
@@ -308,6 +308,15 @@ def handle_delete_trip(data):
     print(pickup.replace(" ", "_"))
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
+@socketio.on('start_trip')
+def handle_start_trip(data):
+    tripID = data['tripID']
+
+    print(tripID)
+    trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
+
+
+#RIDER RELATED
 @socketio.on('init_ride')
 def handle_init_ride(data):
     pickup = data['pickup']
