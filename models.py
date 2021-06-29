@@ -80,7 +80,7 @@ class Trips(db.Model, TimestampMixin):
         self.destination = destination
         self.qr_string = qr_string
         self.session_id = session_id
-        self.active = false;
+        self.active = False;
 
 class Passengers(db.Model, TimestampMixin):
     __table__name = 'passengers'
