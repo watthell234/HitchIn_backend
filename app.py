@@ -323,7 +323,7 @@ def handle_start_trip(data):
 
     emit('start_trip', to=trip.session_id)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and not Trips.active).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active.is_(False)).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
