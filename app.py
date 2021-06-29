@@ -5,6 +5,7 @@ import requests
 
 from flask import Flask, request, jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql.expression import false
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_heroku import Heroku
@@ -323,10 +324,11 @@ def handle_start_trip(data):
 
     emit('start_trip', to=trip.session_id)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active.is_(False)).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == false()).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
+        print(trip.active)
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
 
