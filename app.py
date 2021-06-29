@@ -313,6 +313,7 @@ def handle_start_trip(data):
     tripID = data['tripID']
     pickup = data['pickup']
     dropoff = data['dropoff']
+    car_list = []
 
     print(tripID)
     trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
@@ -332,8 +333,6 @@ def handle_start_trip(data):
     print(car_list)
     print(pickup.replace(" ", "_"))
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
-
-    #NEED TO TAKE THIS TRIP OFF WAITING CARS LIST
 
 #RIDER RELATED
 @socketio.on('init_ride')
