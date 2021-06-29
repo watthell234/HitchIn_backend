@@ -5,7 +5,6 @@ import requests
 
 from flask import Flask, request, jsonify, abort, request
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql.expression import false
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_heroku import Heroku
@@ -265,7 +264,7 @@ def handle_register_trip(data):
     db.session.add(trip)
     db.session.commit()
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == 0).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).filter(Trips.active.is_(False)).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
@@ -298,7 +297,7 @@ def handle_delete_trip(data):
 
     emit('trip_deleted', to=request.sid)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == 0).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).filter(Trips.active.is_(False)).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
