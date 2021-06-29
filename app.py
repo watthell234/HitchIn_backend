@@ -264,7 +264,7 @@ def handle_register_trip(data):
     db.session.add(trip)
     db.session.commit()
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == 0).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
@@ -297,7 +297,7 @@ def handle_delete_trip(data):
 
     emit('trip_deleted', to=request.sid)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == 0).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
@@ -323,11 +323,10 @@ def handle_start_trip(data):
 
     emit('start_trip', to=trip.session_id)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == 0).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
-        print(trip.active == 1)
         car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
         car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
 
