@@ -264,7 +264,7 @@ def handle_register_trip(data):
     db.session.add(trip)
     db.session.commit()
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
@@ -297,7 +297,7 @@ def handle_delete_trip(data):
 
     emit('trip_deleted', to=request.sid)
 
-    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).all()
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
 
     #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
     for trip in trip_rows:
@@ -311,11 +311,29 @@ def handle_delete_trip(data):
 @socketio.on('start_trip')
 def handle_start_trip(data):
     tripID = data['tripID']
+    pickup = data['pickup']
+    dropoff = data['dropoff']
 
     print(tripID)
     trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
 
+    trip.active = True;
+    db.session.commit()
+
     emit('start_trip', to=trip.session_id)
+
+    trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup and Trips.active == False).all()
+
+    #ASSUME EVERY TRIP'S CAR IS UNIQUE FOR NOW.
+    for trip in trip_rows:
+        car = db.session.query(Cars).filter(Cars.id == trip.car_id).scalar()
+        car_list.append({'car_id': car.id, 'license_plate': car.license_plate, 'car_maker': car.car_make})
+
+    print(car_list)
+    print(pickup.replace(" ", "_"))
+    emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
+
+    #NEED TO TAKE THIS TRIP OFF WAITING CARS LIST
 
 #RIDER RELATED
 @socketio.on('init_ride')
