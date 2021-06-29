@@ -315,7 +315,7 @@ def handle_start_trip(data):
     print(tripID)
     trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
 
-    print(trip.id)
+    emit('start_trip', to=trip.session_id)
 
 #RIDER RELATED
 @socketio.on('init_ride')
