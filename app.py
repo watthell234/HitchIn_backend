@@ -288,7 +288,7 @@ def handle_delete_trip(data):
 
     print(tripID)
     #DOESN'T ALWAYS WORK? PROBABLY BECAUSE the client disconnects first before this line gets executed. Not sure.
-    trip = db.session.query(Trips).filter(Trips.session_id == request.sid).scalar()
+    trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
 
     db.session.delete(trip)
     db.session.commit()
