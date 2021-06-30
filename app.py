@@ -370,7 +370,7 @@ def handle_join_trip(data):
         print(trip.id)
         print(trip.qr_string)
         print(trip.session_id)
-        passenger = Passengers(int(userID), trip.id)
+        passenger = Passengers(userID, trip.id)
         db.session.add(passenger)
         db.session.commit()
         join_room(trip.session_id)
