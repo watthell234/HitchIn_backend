@@ -360,7 +360,7 @@ def handle_init_ride(data):
 def handle_join_trip(data):
 
     qr_string = data['qr_string']
-    userID = data['userID']
+    userID = int(data['userID'])
     print(userID)
 
     #ASSUME THERE IS ONLY ONE CAR WITH THE QR_STRING AT A TIME IN TRIPS TABLE FOR NOW
