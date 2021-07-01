@@ -254,6 +254,7 @@ def handle_register_trip(data):
     destination = data['dropoff']
     session_id = data['session_id']
     car_list = []
+    driver_name = ''
 
     print(datetime.now())
     print(userID)
@@ -263,6 +264,8 @@ def handle_register_trip(data):
     trip = Trips(userID, carID, pickup, destination, car.qr_string, session_id)
     db.session.add(trip)
     db.session.commit()
+
+    driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
 
     trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).filter(Trips.active.is_(False)).all()
 
@@ -274,7 +277,7 @@ def handle_register_trip(data):
     print(car_list)
     print(pickup)
 
-    emit('trip_id_' + carID, {'trip_id': trip.id})
+    emit('trip_id_' + carID, {'trip_id': trip.id, 'driver_name': driver.first_name + ' ' + driver.last_name}, to=request.sid)
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 @socketio.on('delete_trip')
