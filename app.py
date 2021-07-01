@@ -433,7 +433,7 @@ def on_leave(data):
 
     print(passenger_list)
 
-    emit('passenger_update', {'action': 'subtract'}, to=trip.session_id)
+    emit('passenger_update', {'action': 'subtract', 'passenger_list': passenger_list}, to=trip.session_id)
 
     leave_room(trip.session_id)
     print(rooms())
