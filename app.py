@@ -411,6 +411,7 @@ def handle_join_trip(data):
 @socketio.on('leave_trip')
 def on_leave(data):
     userID = data['userID']
+    passenger_list = []
 
     passengers = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
     trip = db.session.query(Trips).filter(Trips.id == passengers[0].trip_id).scalar()
@@ -419,6 +420,18 @@ def on_leave(data):
         db.session.delete(passenger)
 
     db.session.commit()
+
+    #Update passenger information
+    driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
+    passenger_list.append({'driver_name': driver.first_name + ' ' + driver.last_name})
+
+    passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+    for passenger_row in passenger_rows:
+        passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+    print(passenger_list)
 
     emit('passenger_update', {'action': 'subtract'}, to=trip.session_id)
 
