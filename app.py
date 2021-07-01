@@ -388,9 +388,9 @@ def handle_join_trip(data):
             passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
             passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
 
-            print(passenger_list)
-            
-        emit('passenger_update', {'action': 'add'}, to=trip.session_id)
+        print(passenger_list)
+
+        emit('passenger_update', {'action': 'add', 'passenger_list': passenger_list}, to=trip.session_id)
         emit('join_trip_response_' + userID, {'success': 1})
     else:
         emit('join_trip_response_' + userID, {'success': 0})
