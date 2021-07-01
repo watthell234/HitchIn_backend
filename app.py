@@ -336,6 +336,7 @@ def handle_start_trip(data):
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 #RIDER RELATED
+#Emits a list of cars available at the pickup spot.
 @socketio.on('init_ride')
 def handle_init_ride(data):
     pickup = data['pickup']
@@ -361,6 +362,7 @@ def handle_join_trip(data):
 
     qr_string = data['qr_string']
     userID = data['userID']
+    passenger_list = []
     print(userID)
 
     #ASSUME THERE IS ONLY ONE CAR WITH THE QR_STRING AT A TIME IN TRIPS TABLE FOR NOW
@@ -374,9 +376,20 @@ def handle_join_trip(data):
         db.session.add(passenger)
         db.session.commit()
         join_room(trip.session_id)
-
         print(rooms())
 
+        #Update passenger information
+        driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
+        passenger_list.append({'driver_name': driver.first_name + ' ' + driver.last_name})
+
+        passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+        for passenger_row in passenger_rows:
+            passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+            print(passenger_list)
+            
         emit('passenger_update', {'action': 'add'}, to=trip.session_id)
         emit('join_trip_response_' + userID, {'success': 1})
     else:
