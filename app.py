@@ -370,7 +370,6 @@ def handle_join_trip(data):
 
     #ASSUME THERE IS ONLY ONE CAR WITH THE QR_STRING AT A TIME IN TRIPS TABLE FOR NOW
     trip = db.session.query(Trips).filter(Trips.qr_string == qr_string).scalar()
-
     if trip:
         print(trip.id)
         print(trip.qr_string)
@@ -390,8 +389,10 @@ def handle_join_trip(data):
 
         print(passenger_list)
 
+        driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
+
         emit('passenger_update', {'action': 'add', 'passenger_list': passenger_list}, to=trip.session_id)
-        emit('join_trip_response_' + userID, {'success': 1})
+        emit('join_trip_response_' + userID, {'success': 1, 'driver_name': driver.first_name + ' ' + driver.last_name})
     else:
         emit('join_trip_response_' + userID, {'success': 0})
     # username = data['username']
