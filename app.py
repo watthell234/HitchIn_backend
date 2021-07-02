@@ -428,7 +428,7 @@ def handle_leave_trip(data):
 @socketio.on('init_passenger_list')
 def handle_init_passenger_list(data):
     tripID = data['tripID']
-    console.log(tripID)
+    print(tripID)
 
 # Closes the carpool room created
 @socketio.on('close')
