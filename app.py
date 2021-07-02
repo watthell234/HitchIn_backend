@@ -428,7 +428,18 @@ def handle_leave_trip(data):
 @socketio.on('init_passenger_list')
 def handle_init_passenger_list(data):
     tripID = data['tripID']
+    passenger_list = []
     print(tripID)
+
+    trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
+
+    passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+    for passenger_row in passenger_rows:
+        passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+    emit('passenger_list', {'passenger_list': passenger_list}, to=trip.session_id)
 
 # Closes the carpool room created
 @socketio.on('close')
