@@ -398,7 +398,7 @@ def handle_join_trip(data):
 
 # This is used to have people exit the carpool trip
 @socketio.on('leave_trip')
-def on_leave(data):
+def handle_leave_trip(data):
     userID = data['userID']
     passenger_list = []
 
@@ -423,6 +423,12 @@ def on_leave(data):
 
     leave_room(trip.session_id)
     print(rooms())
+
+#returns a list of passengers before updating.
+@socketio.on('init_passenger_list')
+def handle_init_passenger_list(data):
+    tripID = data['tripID']
+    console.log(tripID)
 
 # Closes the carpool room created
 @socketio.on('close')
