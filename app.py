@@ -392,21 +392,9 @@ def handle_join_trip(data):
         driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
 
         emit('passenger_update', {'action': 'add', 'passenger_list': passenger_list}, to=trip.session_id)
-        emit('join_trip_response_' + userID, {'success': 1, 'driver_name': driver.first_name + ' ' + driver.last_name})
+        emit('join_trip_response_' + userID, {'success': 1, 'driver_name': driver.first_name + ' ' + driver.last_name, 'tripID': trip.id}, to=trip.session_id)
     else:
         emit('join_trip_response_' + userID, {'success': 0})
-    # username = data['username']
-    # pool_id = data['pool_id']
-    # join_room(pool_id)
-    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    # passng_checked = (db.session.query(Trips)
-    #                 .filter(Trips.car == get_car_id.id, Trips.time_ended == None)
-    #                 .all())
-    # passenger_count = len(passng_checked)
-    # data = {'data': username + ' has joined the carpool: ' + str(pool_id)
-    #             + '. There are: ' + str(passenger_count) + ' in carpool'}
-    # print(data)
-    # emit('roomjoin', data, to=pool_id)
 
 # This is used to have people exit the carpool trip
 @socketio.on('leave_trip')
@@ -435,20 +423,6 @@ def on_leave(data):
 
     leave_room(trip.session_id)
     print(rooms())
-
-    # emit('passenger_update_' + str(trip.car_id), {'action': 'subtract'})
-
-    # db.session.delete(passenger)
-    # db.session.commit()
-
-    # pool_id = data['pool_id']
-    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    # end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all().update().values({Trips.time_ended: datetime.utcnow})
-    # db.session.commit()
-    # data = {'data': 'All users have left carpool: ' + str(pool_id)}
-    # emit('endtrip', data, to=pool_id)
-    # leave_room(pool_id)
-    # print(data)
 
 # Closes the carpool room created
 @socketio.on('close')
