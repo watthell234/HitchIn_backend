@@ -199,6 +199,21 @@ def car_exists(car_plate):
 
     return exists
 
+@app.route("/user/<user_id>", methods=['GET', 'PUT'])
+def user_profile(user_id):
+    user_id = int(user_id)
+    user_profile = db.session.query(User).filter(User.id == user_id).first()
+    phone_number_str = str(user_profile.phone_number)
+    print(user_profile.phone_number)
+    return jsonify({
+        'status': '200',
+        'id': user_profile.id,
+        'firstName': user_profile.first_name,
+        'lastName': user_profile.last_name,
+        'phoneNumber': phone_number_str,
+        'email': user_profile.email
+    })
+
 @app.route("/checkin", methods=['POST'])
 @jwt_required()
 def checkin():
