@@ -71,7 +71,9 @@ def sign_up():
             })
         #The email already exists
         else:
-            abort(402)
+            return jsonify({
+                'status': '402'
+            })
     #Phone number already exists
     else:
         abort(401)
