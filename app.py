@@ -49,24 +49,30 @@ def sign_up():
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
 
-    if not (email_exists(email) or phone_number_exists(phone_number)):
+    #Check if the phone number exists
+    if not phone_number_exists(phone_number):
+        #Check if the email exists
+        if not email_exists(email):
+            new_user = User(phone_number, first_name, last_name, email, is_driver)
+            new_user.set_password(password)
+            db.session.add(new_user)
+            db.session.commit()
+            created_user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+            request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+                        json={"username": str(phone_number), "password": password})
+            # request_token = requests.post('http://127.0.0.1:5000/auth',
+            #             json={"username": str(phone_number), "password": password})
 
-        new_user = User(phone_number, first_name, last_name, email, is_driver)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        created_user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
-        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-                    json={"username": str(phone_number), "password": password})
-        # request_token = requests.post('http://127.0.0.1:5000/auth',
-        #             json={"username": str(phone_number), "password": password})
-
-        return jsonify({
-            'status': '200',
-            'message': 'Successfully Signed Up',
-            'id': str(created_user.id),
-            'auth_token': request_token.json()['access_token']
-        })
+            return jsonify({
+                'status': '200',
+                'message': 'Successfully Signed Up',
+                'id': str(created_user.id),
+                'auth_token': request_token.json()['access_token']
+            })
+        #The email already exists
+        else:
+            abort(402)
+    #Phone number already exists
     else:
         abort(401)
 
