@@ -168,10 +168,14 @@ def login():
             })
         #if authentication fails, abort with 403.
         else:
-            abort(403)
+            response = jsonify({'message': 'Wrong password. Please try again.'})
+            response.status_code = 401
+            return response
     #if phone_number doesn't exist, abort with 401.
     else:
-        abort(401)
+        response = jsonify({'message': 'Phone number does not exist. Please sign up first.'})
+        response.status_code = 402
+        return response
 
 
 @app.route("/create_car", methods=['POST'])
