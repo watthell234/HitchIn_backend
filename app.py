@@ -39,6 +39,14 @@ socketio = SocketIO(app)
 def index():
     return "<h1>Welcome to HitchIn</h1>"
 
+@app.errorhandler(401)
+def email_found:
+    return jsonify(error=str(e)), 401
+
+@app.errorhandler(402)
+def phone_number_found:
+    return jsonify(error=str(e)), 402
+
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
 
