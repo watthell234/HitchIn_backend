@@ -79,10 +79,10 @@ def sign_up():
             })
         #The email already exists
         else:
-            abort(401, 'email_exists', custom = 'email')
+            abort(401, 'email_exists')
     #Phone number already exists
     else:
-        abort(401, 'phone_number_exists', custom = 'phone_number')
+        abort(401, 'phone_number_exists')
 
 def email_exists(email):
 
