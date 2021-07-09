@@ -39,14 +39,6 @@ socketio = SocketIO(app)
 def index():
     return "<h1>Welcome to HitchIn</h1>"
 
-@app.errorhandler(401)
-def email_found(e):
-    return jsonify(error=str(e)), 401
-
-@app.errorhandler(402)
-def phone_number_found(e):
-    return jsonify(error=str(e)), 402
-
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
 
@@ -79,10 +71,10 @@ def sign_up():
             })
         #The email already exists
         else:
-            abort(401, 'email_exists')
+            abort(401, 'email already exists')
     #Phone number already exists
     else:
-        abort(401, 'phone_number_exists')
+        abort(401, 'phone number already exists')
 
 def email_exists(email):
 
