@@ -314,7 +314,7 @@ def handle_delete_trip(data):
     trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
 
     #Add trip history and passenger history if the trip was acive
-    if trip.active.is_(True):
+    if trip.active:
         trip_history = TripHistory(trip.driver_id, trip.car_id, trip.pickup, trip.destination, trip.time_started)
         passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
         for passenger_row in passenger_rows:
