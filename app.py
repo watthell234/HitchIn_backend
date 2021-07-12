@@ -314,15 +314,15 @@ def handle_delete_trip(data):
     trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
 
     #Add trip history and passenger history if the trip was acive
+    #Committing twice here. Not sure if there's a way around it.
     if trip.active:
         trip_history = TripHistory(trip.driver_id, trip.car_id, trip.pickup, trip.destination, trip.time_started)
         passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
         db.session.add(trip_history)
-        db.session.commit()
         for passenger_row in passenger_rows:
             passenger_history = PassengerHistory(passenger_row.user_id, passenger_row.trip_id)
             db.session.add(passenger_history)
-        
+
     db.session.delete(trip)
     db.session.commit()
 
