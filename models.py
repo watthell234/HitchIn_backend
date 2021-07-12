@@ -83,7 +83,7 @@ class Trips(db.Model, TimestampMixin):
 class TripHistory(db.Model, TimestampMixin):
     __tablename__ = 'trip_history'
     id = db.Column(db.Integer, primary_key=True)
-    trip_id = db.Column('trip_id', db.Integer, nullable = False)
+    trip_id = db.Column('trip_id', db.Integer, unique = True, nullable = False)
     driver_id = db.Column('driver_id', db.Integer, nullable = False)
     car_id = db.Column('car_id', db.Integer, nullable = False)
     time_started = db.Column(db.DateTime(timezone=True))
@@ -116,7 +116,7 @@ class PassengerHistory(db.Model, TimestampMixin):
     __tablename__ = 'passenger_history'
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable = False)
-    trip_id = db.Column(db.Integer, nullable = False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip_history.trip_id'), nullable = False)
 
     def __init__(self, passenger_id, trip_id):
         self.user_id = passenger_id
