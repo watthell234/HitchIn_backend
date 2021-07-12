@@ -108,15 +108,15 @@ class Passengers(db.Model, TimestampMixin):
         self.user_id = passenger_id
         self.trip_id = trip_id
 
-# class PassengerHistory(db.Model, TimestampMixin):
-#     __tablename__ = 'passenger_history'
-#     id = db.Column(db.Integer, primary_key=True)
-#     user_id = db.Column(db.Integer, nullable = False)
-#     trip_id = db.Column(db.Integer, db.ForeignKey('tripHistory.id'), nullable = False)
-#
-#     def __init__(self, passenger_id, trip_id):
-#         self.user_id = passenger_id
-#         self.trip_id = trip_id
+class PassengerHistory(db.Model, TimestampMixin):
+    __tablename__ = 'passenger_history'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable = False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip_history.id'), nullable = False)
+
+    def __init__(self, passenger_id, trip_id):
+        self.user_id = passenger_id
+        self.trip_id = trip_id
 
 class Cars(db.Model, TimestampMixin):
     __tablename__ = 'cars'
