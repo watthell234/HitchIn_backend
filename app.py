@@ -4,6 +4,7 @@ import string
 import requests
 
 from flask import Flask, request, jsonify, abort, request
+from flask_mail import Message, Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
@@ -12,9 +13,13 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
+app.config['MAIL_PASSWORD'] = 'Keyboard234'
+app.config['MAIL_SERVER']='smtp.gmail.com'
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
 heroku = Heroku(app)
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 from models import *
 
@@ -198,6 +203,10 @@ def create_car():
         db.session.commit()
         created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
+        msg = Message("Hello", recipients=["leethfc11@gmail.com"])
+        msg.body = "testing"
+        mail.send(msg)
+
         return jsonify({
             'status': '200',
             'message': 'Successfully registered car',
@@ -317,7 +326,7 @@ def handle_delete_trip(data):
     active = False
     if trip.active:
         active = True
-        
+
     trip_history = TripHistory(trip.id, trip.driver_id, trip.car_id, trip.pickup, trip.destination, trip.time_started, active)
     db.session.add(trip_history)
     passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
