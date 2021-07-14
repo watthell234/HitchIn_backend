@@ -1,7 +1,8 @@
-from datetime import datetime
 import random
 import string
 import requests
+
+from datetime import datetime
 
 from flask import Flask, request, jsonify, abort, request
 from flask_mail import Message, Mail
@@ -13,9 +14,13 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_DEFAULT_SENDER'] = 'noreply@hitchinus.com'
 app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
 app.config['MAIL_PASSWORD'] = 'Keyboard234'
-app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
 # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
 heroku = Heroku(app)
 db = SQLAlchemy(app)
@@ -187,25 +192,29 @@ def login():
 @jwt_required()
 def create_car():
 
-    letters = string.ascii_letters
-    qr_string = ''.join(random.choice(letters) for i in range(18))
-    owner_id = request.json.get('userID', None)
-    car_maker = request.json.get('car_maker', None)
-    car_year = request.json.get('car_year', None)
     license_plate = request.json.get('car_plate', None)
-    ezpass_tag = request.json.get('ezpass_tag', None)
 
     #check if the license plate already exists.
     #If not, proceed.
     if not car_exists(license_plate):
+        userID = request.json.get('userID', None)
+        user = db.session.query(User).filter(User.id == userID).scalar()
+
+        letters = string.ascii_letters
+        qr_string = ''.join(random.choice(letters) for i in range(18))
+        owner_id = request.json.get('userID', None)
+        car_maker = request.json.get('car_maker', None)
+        car_year = request.json.get('car_year', None)
+        ezpass_tag = request.json.get('ezpass_tag', None)
+
         car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
+
+        send_qr_email(user.email, qr_string, license_plate)
+
         db.session.add(car)
         db.session.commit()
-        created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
-        msg = Message("Hello", recipients=["leethfc11@gmail.com"])
-        msg.body = "testing"
-        mail.send(msg)
+        created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
         return jsonify({
             'status': '200',
@@ -217,6 +226,23 @@ def create_car():
     #if it does, abort with 401.
     else:
         abort(401)
+
+def send_qr_email(address, qr_string, license_plate):
+    url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
+
+    payload = "{\"data\": " + "\"" + qr_string + "\"" + ", \"file\": \"pdf\"}"
+    headers = {
+    'content-type': "application/json",
+    'x-rapidapi-key': "01022b304fmsh4bb8395c6ee20fap120cb1jsn6d8e3d8483bc",
+    'x-rapidapi-host': "qrcode-monkey.p.rapidapi.com"
+    }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+
+    msg = Message("Thanks For Registering Your Car with Hitchin!", recipients=[address])
+    msg.body = "Your car with " + license_plate + " has been registered!"
+    msg.attach(qr_string + ".pdf", "img/pdf", response.content)
+    mail.send(msg)
 
 def car_exists(car_plate):
 
