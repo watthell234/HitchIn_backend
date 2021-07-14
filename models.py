@@ -2,7 +2,7 @@ from app import db
 from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 import phonenumbers
-from sqlalchemy_utils import PhoneNumberType
+from sqlalchemy_utils import PhoneNumberType, URLType
 from sqlalchemy.orm import relationship
 
 class TimestampMixin(object):
@@ -17,6 +17,7 @@ class User(db.Model, TimestampMixin):
     first_name = db.Column(db.String(18), nullable=False)
     last_name = db.Column(db.String(18), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    profile_photo = db.Column(URLType)
     password_hash = db.Column(db.String(128))
     is_driver = db.Column(db.Boolean)
 
