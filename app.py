@@ -1,9 +1,11 @@
-from datetime import datetime
 import random
 import string
 import requests
 
+from datetime import datetime
+
 from flask import Flask, request, jsonify, abort, request
+from flask_mail import Message, Mail
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
@@ -12,9 +14,22 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+<<<<<<< HEAD
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
 # heroku = Heroku(app)
+=======
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_DEFAULT_SENDER'] = 'noreply@hitchinus.com'
+app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
+app.config['MAIL_PASSWORD'] = 'Keyboard234'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
+>>>>>>> origin/master
 db = SQLAlchemy(app)
+mail = Mail(app)
 
 from models import *
 
@@ -39,6 +54,16 @@ socketio = SocketIO(app)
 def index():
     return "<h1>Welcome to HitchIn</h1>"
 
+def email_found(message):
+    response = jsonify({'message': message})
+    response.status_code = 401
+    return response
+
+def phone_number_found(message):
+    response = jsonify({'message': message})
+    response.status_code = 402
+    return response
+
 @app.route("/sign-up", methods=['POST'])
 def sign_up():
 
@@ -49,26 +74,32 @@ def sign_up():
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
 
-    if not (email_exists(email) or phone_number_exists(phone_number)):
+    #Check if the phone number exists
+    if not phone_number_exists(phone_number):
+        #Check if the email exists
+        if not email_exists(email):
+            new_user = User(phone_number, first_name, last_name, email, is_driver)
+            new_user.set_password(password)
+            db.session.add(new_user)
+            db.session.commit()
+            created_user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
+            request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
+                        json={"username": str(phone_number), "password": password})
+            # request_token = requests.post('http://127.0.0.1:5000/auth',
+            #             json={"username": str(phone_number), "password": password})
 
-        new_user = User(phone_number, first_name, last_name, email, is_driver)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        created_user = db.session.query(User).filter(User.phone_number == phone_number).scalar()
-        request_token = requests.post('https://hitchin-server.herokuapp.com/auth',
-                    json={"username": str(phone_number), "password": password})
-        # request_token = requests.post('http://127.0.0.1:5000/auth',
-        #             json={"username": str(phone_number), "password": password})
-
-        return jsonify({
-            'status': '200',
-            'message': 'Successfully Signed Up',
-            'id': str(created_user.id),
-            'auth_token': request_token.json()['access_token']
-        })
+            return jsonify({
+                'status': '200',
+                'message': 'Successfully Signed Up',
+                'id': str(created_user.id),
+                'auth_token': request_token.json()['access_token']
+            })
+        #The email already exists
+        else:
+            return email_found('email already exists')
+    #Phone number already exists
     else:
-        abort(401)
+        return phone_number_found('phone number already exists')
 
 def email_exists(email):
 
@@ -152,30 +183,42 @@ def login():
             })
         #if authentication fails, abort with 403.
         else:
-            abort(403)
+            response = jsonify({'message': 'Wrong password. Please try again.'})
+            response.status_code = 401
+            return response
     #if phone_number doesn't exist, abort with 401.
     else:
-        abort(401)
+        response = jsonify({'message': 'Phone number does not exist. Please sign up first.'})
+        response.status_code = 402
+        return response
 
 
 @app.route("/create_car", methods=['POST'])
 @jwt_required()
 def create_car():
 
-    letters = string.ascii_letters
-    qr_string = ''.join(random.choice(letters) for i in range(18))
-    owner_id = request.json.get('userID', None)
-    car_maker = request.json.get('car_maker', None)
-    car_year = request.json.get('car_year', None)
     license_plate = request.json.get('car_plate', None)
-    ezpass_tag = request.json.get('ezpass_tag', None)
 
     #check if the license plate already exists.
     #If not, proceed.
     if not car_exists(license_plate):
+        userID = request.json.get('userID', None)
+        user = db.session.query(User).filter(User.id == userID).scalar()
+
+        letters = string.ascii_letters
+        qr_string = ''.join(random.choice(letters) for i in range(18))
+        owner_id = request.json.get('userID', None)
+        car_maker = request.json.get('car_maker', None)
+        car_year = request.json.get('car_year', None)
+        ezpass_tag = request.json.get('ezpass_tag', None)
+
         car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
+
+        send_qr_email(user.email, qr_string, license_plate)
+
         db.session.add(car)
         db.session.commit()
+
         created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
         return jsonify({
@@ -188,6 +231,23 @@ def create_car():
     #if it does, abort with 401.
     else:
         abort(401)
+
+def send_qr_email(address, qr_string, license_plate):
+    url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
+
+    payload = "{\"data\": " + "\"" + qr_string + "\"" + ", \"file\": \"pdf\"}"
+    headers = {
+    'content-type': "application/json",
+    'x-rapidapi-key': "01022b304fmsh4bb8395c6ee20fap120cb1jsn6d8e3d8483bc",
+    'x-rapidapi-host': "qrcode-monkey.p.rapidapi.com"
+    }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+
+    msg = Message("Thanks For Registering Your Car with Hitchin!", recipients=[address])
+    msg.body = "Your car with " + license_plate + " has been registered!"
+    msg.attach(qr_string + ".pdf", "img/pdf", response.content)
+    mail.send(msg)
 
 def car_exists(car_plate):
 
@@ -269,6 +329,7 @@ def handle_register_trip(data):
     destination = data['dropoff']
     session_id = data['session_id']
     car_list = []
+    driver_name = ''
 
     print(datetime.now())
     print(userID)
@@ -278,6 +339,8 @@ def handle_register_trip(data):
     trip = Trips(userID, carID, pickup, destination, car.qr_string, session_id)
     db.session.add(trip)
     db.session.commit()
+
+    driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
 
     trip_rows = db.session.query(Trips).filter(Trips.pickup == pickup).filter(Trips.active.is_(False)).all()
 
@@ -289,7 +352,7 @@ def handle_register_trip(data):
     print(car_list)
     print(pickup)
 
-    emit('trip_id_' + carID, {'trip_id': trip.id})
+    emit('trip_id_' + carID, {'trip_id': trip.id, 'driver_name': driver.first_name + ' ' + driver.last_name}, to=request.sid)
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 @socketio.on('delete_trip')
@@ -304,6 +367,18 @@ def handle_delete_trip(data):
     print(tripID)
     #DOESN'T ALWAYS WORK? PROBABLY BECAUSE the client disconnects first before this line gets executed. Not sure.
     trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
+
+    #Add trip history and passenger history if the trip was acive
+    active = False
+    if trip.active:
+        active = True
+
+    trip_history = TripHistory(trip.id, trip.driver_id, trip.car_id, trip.pickup, trip.destination, trip.time_started, active)
+    db.session.add(trip_history)
+    passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+    for passenger_row in passenger_rows:
+        passenger_history = PassengerHistory(passenger_row.user_id, passenger_row.trip_id)
+        db.session.add(passenger_history)
 
     db.session.delete(trip)
     db.session.commit()
@@ -351,6 +426,7 @@ def handle_start_trip(data):
     emit('updated_car_list_' + pickup.replace(" ", "_"), {'car_list': car_list}, broadcast=True)
 
 #RIDER RELATED
+#Emits a list of cars available at the pickup spot.
 @socketio.on('init_ride')
 def handle_init_ride(data):
     pickup = data['pickup']
@@ -375,12 +451,12 @@ def handle_init_ride(data):
 def handle_join_trip(data):
 
     qr_string = data['qr_string']
-    userID = int(data['userID'])
+    userID = data['userID']
+    passenger_list = []
     print(userID)
 
     #ASSUME THERE IS ONLY ONE CAR WITH THE QR_STRING AT A TIME IN TRIPS TABLE FOR NOW
     trip = db.session.query(Trips).filter(Trips.qr_string == qr_string).scalar()
-
     if trip:
         print(trip.id)
         print(trip.qr_string)
@@ -389,30 +465,29 @@ def handle_join_trip(data):
         db.session.add(passenger)
         db.session.commit()
         join_room(trip.session_id)
-
         print(rooms())
 
-        emit('passenger_update', {'action': 'add'}, to=trip.session_id)
-        emit('join_trip_response_' + userID, {'success': 1})
+        #Update passenger information
+        passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+        for passenger_row in passenger_rows:
+            passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+        print(passenger_list)
+
+        driver = db.session.query(User).filter(User.id == trip.driver_id).scalar()
+
+        emit('passenger_update', {'action': 'add', 'passenger_list': passenger_list}, to=trip.session_id)
+        emit('join_trip_response_' + userID, {'success': 1, 'driver_name': driver.first_name + ' ' + driver.last_name, 'tripID': trip.id}, to=trip.session_id)
     else:
         emit('join_trip_response_' + userID, {'success': 0})
-    # username = data['username']
-    # pool_id = data['pool_id']
-    # join_room(pool_id)
-    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    # passng_checked = (db.session.query(Trips)
-    #                 .filter(Trips.car == get_car_id.id, Trips.time_ended == None)
-    #                 .all())
-    # passenger_count = len(passng_checked)
-    # data = {'data': username + ' has joined the carpool: ' + str(pool_id)
-    #             + '. There are: ' + str(passenger_count) + ' in carpool'}
-    # print(data)
-    # emit('roomjoin', data, to=pool_id)
 
 # This is used to have people exit the carpool trip
 @socketio.on('leave_trip')
-def on_leave(data):
+def handle_leave_trip(data):
     userID = data['userID']
+    passenger_list = []
 
     passengers = db.session.query(Passengers).filter(Passengers.user_id == userID).all()
     trip = db.session.query(Trips).filter(Trips.id == passengers[0].trip_id).scalar()
@@ -422,24 +497,36 @@ def on_leave(data):
 
     db.session.commit()
 
-    emit('passenger_update', {'action': 'subtract'}, to=trip.session_id)
+    #Update passenger information
+    passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+    for passenger_row in passenger_rows:
+        passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+    print(passenger_list)
+
+    emit('passenger_update', {'action': 'subtract', 'passenger_list': passenger_list}, to=trip.session_id)
 
     leave_room(trip.session_id)
     print(rooms())
 
-    # emit('passenger_update_' + str(trip.car_id), {'action': 'subtract'})
+#returns a list of passengers before updating.
+@socketio.on('init_passenger_list')
+def handle_init_passenger_list(data):
+    tripID = data['tripID']
+    passenger_list = []
+    print(tripID)
 
-    # db.session.delete(passenger)
-    # db.session.commit()
+    trip = db.session.query(Trips).filter(Trips.id == tripID).scalar()
 
-    # pool_id = data['pool_id']
-    # get_car_id = db.session.query(Cars).filter(Cars.qr_string == pool_id).first()
-    # end_trip = db.session.query(Trips).filter(Trips.car == get_car_id.id, Trips.time_ended == None).all().update().values({Trips.time_ended: datetime.utcnow})
-    # db.session.commit()
-    # data = {'data': 'All users have left carpool: ' + str(pool_id)}
-    # emit('endtrip', data, to=pool_id)
-    # leave_room(pool_id)
-    # print(data)
+    passenger_rows = db.session.query(Passengers).filter(Passengers.trip_id == trip.id).all()
+
+    for passenger_row in passenger_rows:
+        passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+
+    emit('passenger_list', {'passenger_list': passenger_list}, to=trip.session_id)
 
 # Closes the carpool room created
 @socketio.on('close')

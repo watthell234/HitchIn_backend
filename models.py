@@ -64,7 +64,6 @@ class Trips(db.Model, TimestampMixin):
     driver_id = db.Column('driver_id', db.Integer, db.ForeignKey('users.id'), nullable = False)
     car_id = db.Column('car_id', db.Integer, db.ForeignKey('cars.id'), unique = True, nullable = False)
     time_started = db.Column(db.DateTime(timezone=True))
-    time_ended = db.Column(db.DateTime(timezone=True))
     pickup = db.Column(db.String(120), nullable=False)
     destination = db.Column(db.String(120), nullable=False)
     qr_string = db.Column(db.String(18), nullable=False)
@@ -76,18 +75,49 @@ class Trips(db.Model, TimestampMixin):
         self.driver_id = driver_id
         self.car_id = car_id
         self.time_started = datetime.now()
-        self.time_ended = None
         self.pickup = pickup
         self.destination = destination
         self.qr_string = qr_string
         self.session_id = session_id
         self.active = False;
 
-class Passengers(db.Model, TimestampMixin):
-    __table__name = 'passengers'
+class TripHistory(db.Model, TimestampMixin):
+    __tablename__ = 'trip_history'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False)
-    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable = False, unique = True)
+    trip_id = db.Column('trip_id', db.Integer, unique = True, nullable = False)
+    driver_id = db.Column('driver_id', db.Integer, nullable = False)
+    car_id = db.Column('car_id', db.Integer, nullable = False)
+    time_started = db.Column(db.DateTime(timezone=True))
+    time_ended = db.Column(db.DateTime(timezone=True))
+    pickup = db.Column(db.String(120), nullable=False)
+    destination = db.Column(db.String(120), nullable=False)
+    active = active = db.Column(db.Boolean, nullable=False)
+
+    def __init__(self, trip_id, driver_id, car_id, pickup, destination, time_started, active):
+        self.trip_id = trip_id
+        self.driver_id = driver_id
+        self.car_id = car_id
+        self.time_started = time_started
+        self.time_ended = datetime.now()
+        self.pickup = pickup
+        self.destination = destination
+        self.active = active
+
+class Passengers(db.Model, TimestampMixin):
+    __tablename__ = 'passengers'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable = False, unique = True)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trips.id'), nullable = False)
+
+    def __init__(self, passenger_id, trip_id):
+        self.user_id = passenger_id
+        self.trip_id = trip_id
+
+class PassengerHistory(db.Model, TimestampMixin):
+    __tablename__ = 'passenger_history'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable = False)
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip_history.trip_id'), nullable = False)
 
     def __init__(self, passenger_id, trip_id):
         self.user_id = passenger_id
