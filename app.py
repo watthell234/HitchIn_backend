@@ -14,6 +14,8 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_DEFAULT_SENDER'] = 'noreply@hitchinus.com'
@@ -21,8 +23,6 @@ app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
 app.config['MAIL_PASSWORD'] = 'Keyboard234'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-heroku = Heroku(app)
 db = SQLAlchemy(app)
 mail = Mail(app)
 
@@ -253,6 +253,21 @@ def car_exists(car_plate):
         exists = True
 
     return exists
+
+@app.route("/user/<user_id>", methods=['GET', 'PUT'])
+def user_profile(user_id):
+    user_id = int(user_id)
+    user_profile = db.session.query(User).filter(User.id == user_id).first()
+    phone_number_str = str(user_profile.phone_number)
+    print(user_profile.phone_number)
+    return jsonify({
+        'status': '200',
+        'id': user_profile.id,
+        'firstName': user_profile.first_name,
+        'lastName': user_profile.last_name,
+        'phoneNumber': phone_number_str,
+        'email': user_profile.email
+    })
 
 @app.route("/checkin", methods=['POST'])
 @jwt_required()
