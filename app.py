@@ -22,8 +22,8 @@ app.config['MAIL_PASSWORD'] = 'Keyboard234'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
 
 db = SQLAlchemy(app)
 mail = Mail(app)
