@@ -469,7 +469,7 @@ def handle_join_trip(data):
 
         for passenger_row in passenger_rows:
             passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
-            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name, 'passenger_id': passenger.id})
 
         print(passenger_list)
 
@@ -503,7 +503,7 @@ def handle_leave_trip(data):
 
     print(passenger_list)
 
-    emit('passenger_update', {'action': 'subtract', 'passenger_list': passenger_list}, to=trip.session_id)
+    emit('passenger_update', {'action': 'subtract', 'passenger_list': passenger_list, 'passenger_id': passenger.id}, to=trip.session_id)
 
     leave_room(trip.session_id)
     print(rooms())
