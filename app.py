@@ -216,12 +216,12 @@ def create_car():
         db.session.add(car)
         db.session.commit()
 
-        created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
+        new_car = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
         return jsonify({
             'status': '200',
             'message': 'Successfully registered car',
-            'car_id': str(created_car_id.id),
+            'car_id': str(new_car.id),
             'qr_id': qr_string
         })
 
