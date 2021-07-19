@@ -68,12 +68,13 @@ def sign_up():
     email = request.json.get('email', None)
     password = request.json.get('password', None)
     is_driver = request.json.get('checked', None)
+    profile_photo = request.json.get('photoUrl', None)
 
     #Check if the phone number exists
     if not phone_number_exists(phone_number):
         #Check if the email exists
         if not email_exists(email):
-            new_user = User(phone_number, first_name, last_name, email, is_driver)
+            new_user = User(phone_number, first_name, last_name, email, is_driver, profile_photo)
             new_user.set_password(password)
             db.session.add(new_user)
             db.session.commit()
@@ -254,7 +255,7 @@ def car_exists(car_plate):
 
     return exists
 
-@app.route("/user/<user_id>", methods=['GET', 'PUT'])
+@app.route("/user/<user_id>", methods=['GET', 'PATCH'])
 def user_profile(user_id):
     user_id = int(user_id)
     user_profile = db.session.query(User).filter(User.id == user_id).first()
