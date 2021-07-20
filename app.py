@@ -14,8 +14,6 @@ from flask_heroku import Heroku
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'super-secret'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
-heroku = Heroku(app)
 app.config['MAIL_SERVER']='smtp.gmail.com'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_DEFAULT_SENDER'] = 'noreply@hitchinus.com'
@@ -23,6 +21,10 @@ app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
 app.config['MAIL_PASSWORD'] = 'Keyboard234'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
+
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
+
 db = SQLAlchemy(app)
 mail = Mail(app)
 
@@ -215,12 +217,12 @@ def create_car():
         db.session.add(car)
         db.session.commit()
 
-        created_car_id = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
+        new_car = db.session.query(Cars).filter(Cars.license_plate == license_plate).scalar()
 
         return jsonify({
             'status': '200',
             'message': 'Successfully registered car',
-            'car_id': str(created_car_id.id),
+            'car_id': str(new_car.id),
             'qr_id': qr_string
         })
 
@@ -468,7 +470,7 @@ def handle_join_trip(data):
 
         for passenger_row in passenger_rows:
             passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
-            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+            passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name, 'passenger_id': passenger.id})
 
         print(passenger_list)
 
@@ -498,7 +500,7 @@ def handle_leave_trip(data):
 
     for passenger_row in passenger_rows:
         passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
-        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name, 'passenger_id': passenger.id})
 
     print(passenger_list)
 
@@ -520,7 +522,7 @@ def handle_init_passenger_list(data):
 
     for passenger_row in passenger_rows:
         passenger = db.session.query(User).filter(User.id == passenger_row.user_id).scalar()
-        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name})
+        passenger_list.append({'passenger_name': passenger.first_name + ' ' + passenger.last_name ,'passenger_id': passenger.id})
 
     emit('passenger_list', {'passenger_list': passenger_list}, to=trip.session_id)
 
