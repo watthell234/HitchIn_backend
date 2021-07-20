@@ -269,7 +269,8 @@ def user_profile(user_id):
         'firstName': user_profile.first_name,
         'lastName': user_profile.last_name,
         'phoneNumber': phone_number_str,
-        'email': user_profile.email
+        'email': user_profile.email,
+        'photoUrl': user_profile.profile_photo
     })
 
 @app.route("/checkin", methods=['POST'])
