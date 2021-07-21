@@ -262,7 +262,6 @@ def user_profile(user_id):
     user_id = int(user_id)
     user_profile = db.session.query(User).filter(User.id == user_id).first()
     phone_number_str = str(user_profile.phone_number)
-    print(user_profile.phone_number)
     return jsonify({
         'status': '200',
         'id': user_profile.id,
