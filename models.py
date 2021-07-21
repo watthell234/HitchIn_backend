@@ -21,12 +21,13 @@ class User(db.Model, TimestampMixin):
     password_hash = db.Column(db.String(128))
     is_driver = db.Column(db.Boolean)
 
-    def __init__(self, phone_number, first_name, last_name, email, is_driver):
+    def __init__(self, phone_number, first_name, last_name, email, is_driver, profile_photo):
         self.phone_number = phone_number
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
         self.is_driver = is_driver
+        self.profile_photo = profile_photo
 
     # Create password hashing function
     def set_password(self, password):
