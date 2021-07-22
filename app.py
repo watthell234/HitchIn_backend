@@ -222,7 +222,7 @@ def create_car():
         return jsonify({
             'status': '200',
             'message': 'Successfully registered car',
-            'car_id': str(new_car.id),
+            'car_id': new_car.id,
             'qr_id': qr_string
         })
 
