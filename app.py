@@ -89,7 +89,7 @@ def sign_up():
             return jsonify({
                 'status': '200',
                 'message': 'Successfully Signed Up',
-                'id': str(created_user.id),
+                'id': created_user.id,
                 'auth_token': request_token.json()['access_token']
             })
         #The email already exists
