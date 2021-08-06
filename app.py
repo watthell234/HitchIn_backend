@@ -23,6 +23,7 @@ if 'local' in myHostName:
 else:
     app.config.from_object(ProdConfig())
     heroku = Heroku(app)
+    return heroku
 
 db = SQLAlchemy(app)
 mail = Mail(app)
