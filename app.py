@@ -12,7 +12,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_heroku import Heroku
 from werkzeug.utils import import_string
-from config import Config, ProdConfig, DevConfig
+# from config import Config, ProdConfig, DevConfig
 
 
 app = Flask(__name__)
