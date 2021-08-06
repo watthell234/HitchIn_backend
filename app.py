@@ -16,13 +16,23 @@ from config import Config, ProdConfig, DevConfig
 
 
 app = Flask(__name__)
+app.config['SECRET_KEY'] = 'super-secret'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['MAIL_SERVER']='smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_DEFAULT_SENDER'] = 'noreply@hitchinus.com'
+app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
+app.config['MAIL_PASSWORD'] = 'Keyboard234'
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+heroku = Heroku(app)
 
-myHostName = socket.gethostname()
-if 'local' in myHostName:
-    app.config.from_object(DevConfig())
-else:
-    app.config.from_object(ProdConfig())
-    heroku = Heroku(app)
+# myHostName = socket.gethostname()
+# if 'local' in myHostName:
+#     app.config.from_object(DevConfig())
+# else:
+#     app.config.from_object(ProdConfig())
+#     heroku = Heroku(app)
 
 db = SQLAlchemy(app)
 mail = Mail(app)
