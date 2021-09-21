@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "hitchinanalytics",
+  "private_key_id": "fc0f01c6c3e289ccf3327b051891aa474368d93a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCfnLDnDwQD9GgY\nO82XQ/Re7mH9pwNhFZX+hTabdsAyg5oVBqgtNYN8XKTc6B6cheAEb0MOHxWndI1d\nbjmAoCq8cpggjn/hiv/KjFUlCzekFm/f7V+BEhx5ztTyIuAf5BmFKmrMyuL+ztrJ\n02hCiRGbRczQzOC95k6c5YrLMOPpycShLCzjISkV80BREoHGXxlDoIe9g2XwhODG\nZYuH6WDrmy8esav0oo6zGvu1PJ8yyAvCx+rgAkSptG0ZMnlOBmdCWkq7VkgOPGXi\niPpi+/OcsCUnN06ChuEScFaCXl3hgV37ixx0sjN/+J1S7l8USpGD+olyCurVX4w6\nTbsLfxjBAgMBAAECggEABG1Sa8o7FIgAJiHsgSRRoBtxDNnHynbQjvtvaQ75ZD1J\ntgkV+5EHKVkhen4WsUU2UjEq1TawAVHGhP+kaSioHst35DlHm0AheaL8Tpd5ztuP\ndVDObBRORWOi/OdSO5g2S/8B8NW0x5gBsgTi2KuYGSwtsuHn3uSHLCtituGPhMG4\nZ2d16Fixf/MP4nkRIUMWR7qGffXCgz+PfkeCXMlbI2hC0rnaXHiqH698ZNyu8lL4\nDQhWHVXHGoNManeOx9J2foVc2ODHO+5MLCRYF9r4Tcb2nsCpFefthmbR4IJL74li\nzVdD+rDTaNp0ySdK5ErSRdw9PHzlfj4mfB9Fpj5JQQKBgQDdo+0l9u6asJSKNWCX\nE7dMu3dcnxzr2gtlpUgGpnw/jGdNGpaMoz9vkDD518xcjKI2yKfCs1D6nKIsdUEe\n+1cZwD6Sm4DAbzFnRVHwuTT1mFPO5ONVeCchFcITBDQpcTcyGmh1+s5XbVzk+ReU\nGMIDTUmzXuVBXcnbHs2HwMzOcQKBgQC4Wxh3FqUBS8PIYFutUY4yT1ylrl312BMz\nrc687QOoHMdWl765KwGmx7WAG78VZ7w5diU0ykziN0PD9yTT6hTnnhV4gQ/arvzl\njeWjWtTOhXejTL7RWfFqqn21EFxZbk7Xc/ra31FO7q3wPxHUuSu8ssNpouJYpPK3\nKPwPco+3UQKBgHTXdyxdadnontXhX8MlJKtx5HHSe5emQf3azQace8GwjcCq9JS9\ndrKki/0aE2Tyyo0g6LeOenEzY5cWVTc0/uzXWOVGzvAjbiLn+1Nw/4c9P2lBZsrm\n5ZHee4o03B7AzX0/SLRxfJfAUolu+0waZSUCeIjzzN3RyJkYOveG3zExAoGANUuQ\nfQz80q0Wglzo4+gJ1Z1/yR3pZ+L5Wh1LAO77+aOoNO5VYq5+IbrmS4y55vRAQ9RV\n2TcKlvMnEgXmjaTEOllHF7kn3i5sSeiFlH3zu2h2N60+FMONuSpkgO2j5O6wuDR9\nNr0MgmcZvbRd8UM+06RSPb2q9blpuW2NwOF7jqECgYEAzkcHjJdRaz1t2p4MQfFh\nJ0lpEezm2IqhOYOLTjiFZNwc/2XLN2zoA4P/0UWO9kp0qykg5IVJ58wLPbBfLsjS\nMkzzr4RZYL75KSYH3SUPTSMIq6b+dawzCXoscZXkFfO/Nz3OiqduzheJztxwCWB1\niWROyIiGd3doJqoox2wyJYo=\n-----END PRIVATE KEY-----\n",
+  "client_email": "hitchinstorage@hitchinanalytics.iam.gserviceaccount.com",
+  "client_id": "117379059369794354783",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/hitchinstorage%40hitchinanalytics.iam.gserviceaccount.com"
+}

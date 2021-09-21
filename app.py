@@ -2,6 +2,7 @@ import random
 import string
 import requests
 import socket
+import os
 
 from datetime import datetime
 
@@ -12,6 +13,7 @@ from flask_jwt import JWT, jwt_required, current_identity
 from flask_socketio import SocketIO, send, emit, join_room, leave_room, close_room, rooms, disconnect
 from flask_heroku import Heroku
 from werkzeug.utils import import_string
+from google.cloud import storage
 # from config import Config, ProdConfig, DevConfig
 
 
@@ -25,7 +27,8 @@ app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
 app.config['MAIL_PASSWORD'] = 'Keyboard234'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-heroku = Heroku(app)
+app.config['SQLALCHEMY_DATABASE_URI']='postgresql://127.0.0.1/hitchin2'
+# heroku = Heroku(app)
 
 # myHostName = socket.gethostname()
 # if 'local' in myHostName:
@@ -199,7 +202,6 @@ def login():
         response.status_code = 402
         return response
 
-
 @app.route("/create_car", methods=['POST'])
 @jwt_required()
 def create_car():
@@ -219,9 +221,13 @@ def create_car():
         car_year = request.json.get('car_year', None)
         ezpass_tag = request.json.get('ezpass_tag', None)
 
-        car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag)
+        filename = create_car_qr(qr, qr_string)
+        qr_url = qr_url(filename)
+
+        car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag, qr_url)
 
         send_qr_email(user.email, qr_string, license_plate)
+
 
         db.session.add(car)
         db.session.commit()
@@ -239,6 +245,30 @@ def create_car():
     else:
         abort(401)
 
+def create_car_qr(qr, qr_string):
+    url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
+
+    payload = "{\"data\": " + "\"" + qr_string + "\"" + ", \"file\": \"png\",  \"download\":\"false\"}"
+    # querystring = {"data":"qr_string","size":"600","file":"png","download":"false","config":"body\":\"square\",\"eye\":\"frame5\",\"eyeBall\":\"ball5\",\"erf1\":[\"fh\"],\"erf2\":[],\"erf3\":[\"fh\",\"fv\"],\"brf1\":[],\"brf2\":[],\"brf3\":[],\"bodyColor\":\"#404E5A\",\"bgColor\":\"#FFFFFF\",\"eye1Color\":\"#000000\",\"eye2Color\":\"#000000\",\"eye3Color\":\"#000000\",\"eyeBall1Color\":\"#000000\",\"eyeBall2Color\":\"#000000\",\"eyeBall3Color\":\"#000000\",\"gradientColor1\":\"\",\"gradientColor2\":\"\",\"gradientType\":\"linear\",\"gradientOnEyes\":\"true\",\"logo\":\"ea16e212dcc17531eaa49d9e318fa3fbb4f750e7.png\",\"logoMode\":\"default\"}"}
+
+    headers = {
+    'content-type': "application/json",
+    'x-rapidapi-key': "01022b304fmsh4bb8395c6ee20fap120cb1jsn6d8e3d8483bc",
+    'x-rapidapi-host': "qrcode-monkey.p.rapidapi.com"
+    }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+    filename = qr + '_qr.png'
+    file = open(filename, "wb")
+    file.write(response.content)
+    file.close()
+    return filename
+
+
+
+
+
+
 def send_qr_email(address, qr_string, license_plate):
     url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
 
@@ -255,6 +285,33 @@ def send_qr_email(address, qr_string, license_plate):
     msg.body = "Your car with " + license_plate + " has been registered!"
     msg.attach(qr_string + ".pdf", "img/pdf", response.content)
     mail.send(msg)
+
+def qr_url(filename):
+    storage_client = storage.Client()
+    bucket_name = 'hitchin_qr'
+    destination_blob_name = filename
+    source_file_name = filename
+
+    bucket = storage_client.bucket(bucket_name)
+
+    blob = bucket.blob(destination_blob_name)
+
+    with open(source_file_name, "rb") as my_file:
+        blob.upload_from_file(my_file,  content_type='image/png')
+
+    if os.path.exists(filename):
+        os.remove(filename)
+    else:
+        print("The file does not exist")
+
+    qr_url = 'https://storage.googleapis.com/' + bucket_name + '/' + destination_blob_name
+    return qr_url
+    print(
+        "File {} uploaded to {}.".format(
+            source_file_name, destination_blob_name
+        ), qr_url
+    )
+
 
 def car_exists(car_plate):
 
