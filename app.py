@@ -203,7 +203,7 @@ def login():
         return response
 
 @app.route("/create_car", methods=['POST'])
-# @jwt_required()
+@jwt_required()
 def create_car():
 
     license_plate = request.json.get('car_plate', None)
