@@ -27,8 +27,8 @@ app.config['MAIL_USERNAME'] = 'noreply@hitchinus.com'
 app.config['MAIL_PASSWORD'] = 'Keyboard234'
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config['SQLALCHEMY_DATABASE_URI']='postgresql://127.0.0.1/hitchin2'
-# heroku = Heroku(app)
+# app.config['SQLALCHEMY_DATABASE_URI']='postgresql://127.0.0.1/hitchin'
+heroku = Heroku(app)
 
 # myHostName = socket.gethostname()
 # if 'local' in myHostName:
@@ -203,7 +203,7 @@ def login():
         return response
 
 @app.route("/create_car", methods=['POST'])
-@jwt_required()
+# @jwt_required()
 def create_car():
 
     license_plate = request.json.get('car_plate', None)
@@ -221,8 +221,8 @@ def create_car():
         car_year = request.json.get('car_year', None)
         ezpass_tag = request.json.get('ezpass_tag', None)
 
-        filename = create_car_qr(qr, qr_string)
-        qr_url = qr_url(filename)
+        filename = create_car_qr(qr_string, qr_string)
+        qr_url = get_qr_url(filename)
 
         car = Cars(qr_string, owner_id, car_maker, car_year, license_plate, ezpass_tag, qr_url)
 
@@ -245,6 +245,8 @@ def create_car():
     else:
         abort(401)
 
+
+
 def create_car_qr(qr, qr_string):
     url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
 
@@ -265,28 +267,7 @@ def create_car_qr(qr, qr_string):
     return filename
 
 
-
-
-
-
-def send_qr_email(address, qr_string, license_plate):
-    url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
-
-    payload = "{\"data\": " + "\"" + qr_string + "\"" + ", \"file\": \"pdf\"}"
-    headers = {
-    'content-type': "application/json",
-    'x-rapidapi-key': "01022b304fmsh4bb8395c6ee20fap120cb1jsn6d8e3d8483bc",
-    'x-rapidapi-host': "qrcode-monkey.p.rapidapi.com"
-    }
-
-    response = requests.request("POST", url, data=payload, headers=headers)
-
-    msg = Message("Thanks For Registering Your Car with Hitchin!", recipients=[address])
-    msg.body = "Your car with " + license_plate + " has been registered!"
-    msg.attach(qr_string + ".pdf", "img/pdf", response.content)
-    mail.send(msg)
-
-def qr_url(filename):
+def get_qr_url(filename):
     storage_client = storage.Client()
     bucket_name = 'hitchin_qr'
     destination_blob_name = filename
@@ -311,6 +292,24 @@ def qr_url(filename):
             source_file_name, destination_blob_name
         ), qr_url
     )
+
+def send_qr_email(address, qr_string, license_plate):
+    url = "https://qrcode-monkey.p.rapidapi.com/qr/custom"
+
+    payload = "{\"data\": " + "\"" + qr_string + "\"" + ", \"file\": \"pdf\"}"
+    headers = {
+    'content-type': "application/json",
+    'x-rapidapi-key': "01022b304fmsh4bb8395c6ee20fap120cb1jsn6d8e3d8483bc",
+    'x-rapidapi-host': "qrcode-monkey.p.rapidapi.com"
+    }
+
+    response = requests.request("POST", url, data=payload, headers=headers)
+
+    msg = Message("Thanks For Registering Your Car with Hitchin!", recipients=[address])
+    msg.body = "Your car with " + license_plate + " has been registered!"
+    msg.attach(qr_string + ".pdf", "img/pdf", response.content)
+    mail.send(msg)
+
 
 
 def car_exists(car_plate):
