@@ -337,7 +337,15 @@ def user_profile(user_id):
         'photoUrl': user_profile.profile_photo
     })
 
-@app.route("/checkin", methods=['POST'])
+@app.route("/car/<car_id", methods=['GET'])
+def get_car(car_id):
+    car_id = int(car_id)
+    car = db.session.query(Cars).filter(Cars.id == car_id).scalar()
+    return jsonify({
+        'qr_url': car.qr_url
+    })
+
+""@app.route("/checkin", methods=['POST'])
 @jwt_required()
 def checkin():
     car_qr = request.json.get('carQr', None)
