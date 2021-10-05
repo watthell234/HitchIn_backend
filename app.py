@@ -341,6 +341,7 @@ def user_profile(user_id):
 def get_car(car_id):
     car_id = int(car_id)
     car = db.session.query(Cars).filter(Cars.id == car_id).scalar()
+    print(car.qr_url)
     return jsonify({
         'qr_url': car.qr_url
     })
