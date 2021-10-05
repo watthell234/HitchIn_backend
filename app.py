@@ -345,7 +345,7 @@ def get_car(car_id):
         'qr_url': car.qr_url
     })
 
-""@app.route("/checkin", methods=['POST'])
+@app.route("/checkin", methods=['POST'])
 @jwt_required()
 def checkin():
     car_qr = request.json.get('carQr', None)
