@@ -337,7 +337,7 @@ def user_profile(user_id):
         'photoUrl': user_profile.profile_photo
     })
 
-@app.route("/car/<car_id", methods=['GET'])
+@app.route("/car/<car_id>", methods=['GET'])
 def get_car(car_id):
     car_id = int(car_id)
     car = db.session.query(Cars).filter(Cars.id == car_id).scalar()
